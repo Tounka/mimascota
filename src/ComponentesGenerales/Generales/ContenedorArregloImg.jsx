@@ -15,11 +15,11 @@ const ContenedorImg = styled.div`
     aspect-ratio: 1 / 1;
     background-color: lightgray; 
     overflow: hidden;
-
+    clip-path: polygon(20% 0%, 100% 0%, 100% 15%, 100% 80%, 80% 100%, 15% 100%, 0% 100%, 0% 20%);
     img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Mantiene la proporción de la imagen y rellena el contenedor */
+        object-fit: cover; 
     }
 `
 
