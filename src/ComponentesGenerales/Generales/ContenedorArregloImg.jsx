@@ -1,5 +1,7 @@
 import styled from "styled-components"
 import { ImgPicture } from "./Img"
+import { useContext } from "react"
+import { ContextoGeneral } from "../Contexto/ContextoGeneral"
 const ContenedorGridImg = styled.div`
     width: 90%;
     min-height: 100px;
@@ -7,7 +9,11 @@ const ContenedorGridImg = styled.div`
     height: auto;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    @media (min-width: 1000px) {
+        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    }
     gap: 10px;
+
 `
 
 const ContenedorImg = styled.div`
@@ -15,7 +21,15 @@ const ContenedorImg = styled.div`
     aspect-ratio: 1 / 1;
     background-color: lightgray; 
     overflow: hidden;
-    clip-path: polygon(20% 0%, 100% 0%, 100% 15%, 100% 80%, 80% 100%, 15% 100%, 0% 100%, 0% 20%);
+    
+    transition: .15s ease-in-out;
+    border-radius: 30% 0 30% 0;
+    &:hover{
+        transition: .15s ease-in-out;
+        border-radius: 20% 0 20% 0;
+        cursor: pointer;
+        
+    }
     img {
         width: 100%;
         height: 100%;
@@ -23,12 +37,18 @@ const ContenedorImg = styled.div`
     }
 `
 
-export const GridImg = ({ arregloImg = [1, 1, 1, 1, 1] }) => {
+export const GridImg = ({ catData = [1, 1, 1, 1, 1] }) => {
+    console.log(catData);
+    const {setSeccionSeleccionada, setPostSeleccionado} = useContext(ContextoGeneral);
+    const handleClick = (card) =>{
+        setPostSeleccionado(card);
+        setSeccionSeleccionada('post');
+    }
     return (
         <ContenedorGridImg>
-            {arregloImg.map((img, index) => (
-                <ContenedorImg key={index}>
-                    <ImgPicture src={img} alt='Imagen Grid' />
+            {catData.map((card, index) => (
+                <ContenedorImg key={index} onClick={() => handleClick(card) }>
+                    <ImgPicture src={card.img} alt='Imagen Grid' />
                 </ContenedorImg>
             ))}
         </ContenedorGridImg>
