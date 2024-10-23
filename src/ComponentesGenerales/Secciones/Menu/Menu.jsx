@@ -1,5 +1,7 @@
 import styled from "styled-components"
 import { ContenedorGenerico } from "../../Display.jsx/Contenedores"
+import { useContext } from "react"
+import { ContextoGeneral, ContextoGeneralProvider } from "../../Contexto/ContextoGeneral"
 
 const MenuPrincipalStyled = styled.div`
     width: 100%;
@@ -30,14 +32,24 @@ const ItemMenu = styled.div`
         background-color: white;
     }
 `
-
+const TituloSeccion = styled.div`
+    font-size: 18px;
+    color: black;
+    font-weight: bold;
+`
 export const SeccionMenu = ({secciones = [1,1,1,1]}) =>{
+    const {setSeccionSeleccionada} = useContext(ContextoGeneral);
+    
+    const handleClick = (id) =>{
+        setSeccionSeleccionada(id)
+    }
     return(
         <SeccionMenuStyled>
-            {secciones.map((seccion, index)=>{
+            <TituloSeccion>{secciones[0]}</TituloSeccion>
+            {secciones[1].map((seccion, index)=>{
                 return(
-                    <ItemMenu>
-                        {`${seccion}, '-' ,${index}`}
+                    <ItemMenu onClick={() => handleClick(seccion.id) } >
+                        {`${seccion.nombre}, '-' ,${seccion.id}`}
                     </ItemMenu>
                 )   
             })}
@@ -47,14 +59,14 @@ export const SeccionMenu = ({secciones = [1,1,1,1]}) =>{
 
 
 export const Menu = ({pet}) =>{
-
+    const seccionPerfil = ['Perfil',[{nombre: 'Perfil', id:'miperfil'}, {nombre: 'Mis Mascotas', id: 'seleccionarMascota'}, {nombre: 'Agregar Mascota', id: 'agregarMascota'}]]
     return(
         
             
             <MenuPrincipalStyled>
-                <SeccionMenu />
-                <SeccionMenu />
-                <SeccionMenu />
+                <SeccionMenu secciones =  {seccionPerfil} />
+                <SeccionMenu secciones =  {seccionPerfil} />
+                <SeccionMenu secciones =  {seccionPerfil} />
             </MenuPrincipalStyled>
    
         

@@ -54,7 +54,7 @@ const Menu = () =>{
     }
     return( 
         <MenuStyled>
-            <ContenedoresIconos onClick={() => handleClick('post')} >  </ContenedoresIconos>
+            <ContenedoresIconos onClick={() => handleClick('btn3')} >  </ContenedoresIconos>
             <ContenedoresIconos onClick={() => handleClick('inicial')} > <MdPets /> </ContenedoresIconos>
             <ContenedoresIconos onClick={() => handleClick('menu')} > <MdMenu /> </ContenedoresIconos>
         </MenuStyled>
