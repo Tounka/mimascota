@@ -27,7 +27,7 @@ export const catData = [
 
 
 
-export const usuario = {
+export const usuarioData = {
     data: {
       nombre: 'Carlos Pérez',
       fechaNacimiento: '1990-04-10', // Fecha de nacimiento del usuario

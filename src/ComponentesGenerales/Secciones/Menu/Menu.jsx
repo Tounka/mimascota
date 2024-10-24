@@ -49,7 +49,7 @@ export const SeccionMenu = ({secciones = [1,1,1,1]}) =>{
             {secciones[1].map((seccion, index)=>{
                 return(
                     <ItemMenu onClick={() => handleClick(seccion.id) } >
-                        {`${seccion.nombre}, '-' ,${seccion.id}`}
+                        {`- ${seccion.nombre}`}
                     </ItemMenu>
                 )   
             })}
@@ -60,6 +60,7 @@ export const SeccionMenu = ({secciones = [1,1,1,1]}) =>{
 
 export const Menu = ({pet}) =>{
     const seccionPerfil = ['Perfil',[{nombre: 'Perfil', id:'usuarioHumano'}, {nombre: 'Mis Mascotas', id: 'seleccionarMascota'}, {nombre: 'Agregar Mascota', id: 'agregarMascota'}]]
+    const eccionSocial = ['Social',[{nombre: 'Amigos', id:'Amigos'}, {nombre: 'Mis Mascotas', id: 'seleccionarMascota'}, {nombre: 'Agregar Mascota', id: 'agregarMascota'}]]
     return(
         
             

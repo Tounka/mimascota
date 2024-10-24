@@ -28,13 +28,13 @@ const ContenedorHorizontal = styled.div`
   
   
 export const Perfil = () =>{
-    const {mascotaUsuarioSeleccionada} = useContext(ContextoGeneral);
+    const {mascotaUsuarioSeleccionada, usuario} = useContext(ContextoGeneral);
 
     const nombre = mascotaUsuarioSeleccionada?.nombre || 'Pancho';
     const raza = mascotaUsuarioSeleccionada?.raza || 'Paco';
     const relacion = mascotaUsuarioSeleccionada?.relacion || 'Amigo de ';
     const img = mascotaUsuarioSeleccionada?.img || 'https://www.whiskas.com.mx/cdn-cgi/image/format=auto,q=90/sites/g/files/fnmzdf4861/files/2022-11/eduquer-son-Chaton-comment-bien-eduquer-son-Chaton.jpg';
-    const user = mascotaUsuarioSeleccionada?.user || 'Pam';
+    const user = usuario?.displaName || 'Pam';
 
     const arregloImg = mascotaUsuarioSeleccionada?.catData || catData;
     return(

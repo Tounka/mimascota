@@ -49,7 +49,7 @@ export const AppPrincipal = () => {
   }
 
   return (
-    <DisplayPrincipalMenu>
+    <DisplayPrincipalMenu margin>
       {seccion}
     </DisplayPrincipalMenu>
   );

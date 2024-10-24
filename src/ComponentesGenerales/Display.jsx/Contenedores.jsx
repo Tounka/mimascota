@@ -9,3 +9,6 @@ export const ContenedorGenerico = styled.div`
     padding: 10px;
     overflow-y: auto;
 `
+export const ContenedorGenericoCentrado = styled(ContenedorGenerico)`
+    justify-content: center;
+`

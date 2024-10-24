@@ -1,6 +1,6 @@
 import styled from "styled-components"
 
-import { usuario } from "../../Contexto/DataUsuarioTemporal"
+import { usuarioData } from "../../Contexto/DataUsuarioTemporal"
 import { ContenedorGenerico } from "../../Display.jsx/Contenedores"
 import { TxtGenerico } from "../../Generales/Titulos"
 import { ImgPicture } from "../../Generales/Img"
@@ -52,8 +52,10 @@ const generarBorderRadiusAleatorio = () => {
   
   
 export const SeleccionarMascota = () =>{
-    const {mascotas} = usuario;
-    console.log(mascotas);
+    const {mascotas} = usuarioData;
+    const {usuario} = useContext(ContextoGeneral);
+
+    console.log(usuario);
     const {setMascotaUsuarioSeleccionada, setSeccionSeleccionada} = useContext(ContextoGeneral);
     const handleClick = (mascota) =>{
         setMascotaUsuarioSeleccionada(mascota);
