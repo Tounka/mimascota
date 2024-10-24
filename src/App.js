@@ -1,54 +1,26 @@
-import { DisplayPrincipal } from './ComponentesGenerales/Display.jsx/DisplayPrincipal';
-import './App.css';
-import { Perfil } from './ComponentesGenerales/Secciones/Perfil';
-import {Menu} from './ComponentesGenerales/Secciones/Menu/Menu'
-import { Post } from './ComponentesGenerales/Secciones/Post';
-import { FormularioMascota } from './ComponentesGenerales/Secciones/Menu/FormularioMascota';
-import { useContext, useEffect, useState } from 'react';
+
+import { useContext, useState } from 'react';
+import { DisplayPrincipalNoMenu } from './ComponentesGenerales/Display.jsx/DisplayPrincipal';
 import { ContextoGeneral } from './ComponentesGenerales/Contexto/ContextoGeneral';
-import { SeleccionarMascota } from './ComponentesGenerales/Secciones/Menu/SeleccionarMascota';
 
+import { AppPrincipal } from './Paginas/AppPrincipal';
+import { IniciarSesion } from './Paginas/IniciarSesion';
+
+import { Route, Routes } from 'react-router-dom';
 function App() {
-  const [seccion, setSeccion] = useState();
-  const {seccionSeleccionada} = useContext(ContextoGeneral)
-
-  useEffect(()=>{
-    switch (seccionSeleccionada) {
-      case "inicial":
-        setSeccion(<Perfil />);
-        break;
-      case "menu":
-        setSeccion(<Menu />);
-        break;
-      case "post":
-        setSeccion(<Post />);
-        break;
-      case "agregarMascota":
-        setSeccion(<FormularioMascota />);
-        break;
-      case "seleccionarMascota":
-        setSeccion(<SeleccionarMascota />);
-        break;
-      case "btn3":
-        setSeccion(<SeleccionarMascota />);
-        break;
+  const [seccion, setSeccion] = useState(null);
+  const { seccionSeleccionada, setSeccionSeleccionada } = useContext(ContextoGeneral);
 
 
-      default:
-        setSeccion(<Menu />);
-    }
 
-
-    //logica para btn regresar
-
-    console.log(seccionSeleccionada);
-  },[seccionSeleccionada])
   return (
-    
-      <DisplayPrincipal >
-        {seccion}
-      </DisplayPrincipal>
-  
+    <DisplayPrincipalNoMenu>
+      <Routes>
+          <Route path = '/iniciarsesion' element = {<IniciarSesion />} default />
+          <Route path = '/' element = {<AppPrincipal />}  />
+      </Routes>
+
+    </DisplayPrincipalNoMenu>
   );
 }
 

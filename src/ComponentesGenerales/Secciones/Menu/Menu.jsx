@@ -59,7 +59,7 @@ export const SeccionMenu = ({secciones = [1,1,1,1]}) =>{
 
 
 export const Menu = ({pet}) =>{
-    const seccionPerfil = ['Perfil',[{nombre: 'Perfil', id:'miperfil'}, {nombre: 'Mis Mascotas', id: 'seleccionarMascota'}, {nombre: 'Agregar Mascota', id: 'agregarMascota'}]]
+    const seccionPerfil = ['Perfil',[{nombre: 'Perfil', id:'usuarioHumano'}, {nombre: 'Mis Mascotas', id: 'seleccionarMascota'}, {nombre: 'Agregar Mascota', id: 'agregarMascota'}]]
     return(
         
             

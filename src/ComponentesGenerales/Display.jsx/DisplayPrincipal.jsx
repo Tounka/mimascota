@@ -11,6 +11,16 @@ const DisplayPrincipalStyled = styled.div`
     
 `
 
+const DisplayPrincipalNoGridStyled = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    
+`
+
 const MenuStyled = styled.div`
     height: 80px;
     width: 100%;
@@ -54,14 +64,14 @@ const Menu = () =>{
     }
     return( 
         <MenuStyled>
-            <ContenedoresIconos onClick={() => handleClick('btn3')} >  </ContenedoresIconos>
+            <ContenedoresIconos onClick={() => handleClick('iniciarSesion')} >  </ContenedoresIconos>
             <ContenedoresIconos onClick={() => handleClick('inicial')} > <MdPets /> </ContenedoresIconos>
             <ContenedoresIconos onClick={() => handleClick('menu')} > <MdMenu /> </ContenedoresIconos>
         </MenuStyled>
     )
 }
 
-export const DisplayPrincipal = ({children}) =>{
+export const DisplayPrincipalMenu = ({children}) =>{
     return(
         <DisplayPrincipalStyled>
             <ContenedorChidren>
@@ -69,5 +79,13 @@ export const DisplayPrincipal = ({children}) =>{
             </ContenedorChidren>
             <Menu />
         </DisplayPrincipalStyled>
+    );
+}
+
+export const DisplayPrincipalNoMenu = ({children}) =>{
+    return(
+        <DisplayPrincipalNoGridStyled>
+            {children}
+        </DisplayPrincipalNoGridStyled>
     );
 }
