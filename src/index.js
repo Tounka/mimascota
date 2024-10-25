@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { ContextoGeneralProvider } from './ComponentesGenerales/Contexto/ContextoGeneral';
+import { ContextoFirebaseProvider } from './ComponentesGenerales/Contexto/ContextoFirebase';
 import { BrowserRouter } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -10,7 +11,9 @@ root.render(
   <React.StrictMode>
     <BrowserRouter>
       <ContextoGeneralProvider>
-        <App />
+        <ContextoFirebaseProvider>
+          <App />
+        </ContextoFirebaseProvider>
       </ContextoGeneralProvider>
     </BrowserRouter>
   </React.StrictMode>

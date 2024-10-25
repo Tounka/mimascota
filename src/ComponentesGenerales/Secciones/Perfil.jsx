@@ -6,6 +6,7 @@ import { GridImg } from "../Generales/ContenedorArregloImg"
 import { catData } from "../Contexto/DataUsuarioTemporal"
 import { useContext } from "react"
 import { ContextoGeneral } from "../Contexto/ContextoGeneral"
+import { ContextoFirebase } from "../Contexto/ContextoFirebase"
 
 const ContenedorImg = styled.div`
     width: 80%;
@@ -28,7 +29,9 @@ const ContenedorHorizontal = styled.div`
   
   
 export const Perfil = () =>{
-    const {mascotaUsuarioSeleccionada, usuario} = useContext(ContextoGeneral);
+    const {mascotaUsuarioSeleccionada} = useContext(ContextoGeneral);
+    const {usuario} = useContext(ContextoFirebase);
+
 
     const nombre = mascotaUsuarioSeleccionada?.nombre || 'Pancho';
     const raza = mascotaUsuarioSeleccionada?.raza || 'Paco';

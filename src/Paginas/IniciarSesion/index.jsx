@@ -9,6 +9,9 @@ import { BtnGenerico } from '../../ComponentesGenerales/Generales/Btns';
 import { FcGoogle } from "react-icons/fc";
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { FormularioUsuarioHumano } from './FormularioUsuarioHumano';
+
+
 const BtnIniciarSesionContenedor = styled.div`
 
     display: grid;
@@ -77,7 +80,7 @@ const ContenedorIniciarSesion = styled.div`
 const provider = new GoogleAuthProvider();
 
 export const IniciarSesion = () => {
-    const {setSeccionSeleccionada,setUsuario} = useContext(ContextoGeneral);
+    const {setSeccionSeleccionada,setUsuario, validadorUsuarioFirebase} = useContext(ContextoGeneral);
     const navigate = useNavigate();
     const [error, setError] = useState('');
 
@@ -86,7 +89,7 @@ export const IniciarSesion = () => {
             const result = await signInWithPopup(auth, provider);
             setUsuario(result.user);
             setSeccionSeleccionada('inicial');
-            navigate('/');
+            
             
         } catch (error) {
             setError('Error al iniciar sesión con Google.');
@@ -97,12 +100,16 @@ export const IniciarSesion = () => {
     return (
         <DisplayPrincipalNoMenu>
             <ContenedorGenericoCentrado >
-                <ContenedorIniciarSesion>
-                    <TxtGenerico size= '48px' color='var(--ColorAzulPrincipal)' bold >Inicia Sesión</TxtGenerico>
+                {!validadorUsuarioFirebase ?
 
-                    <BtnIniciarSesion fn={handleGoogleLogin} icono={<FcGoogle />} error={error} txt='Continua con Google' />
+                    <ContenedorIniciarSesion>
+                        <TxtGenerico size= '48px' color='var(--ColorAzulPrincipal)' bold >Inicia Sesión</TxtGenerico>
+                        <BtnIniciarSesion fn={handleGoogleLogin} icono={<FcGoogle />} error={error} txt='Continua con Google' />
+                    </ContenedorIniciarSesion>
 
-                </ContenedorIniciarSesion>
+                    : <FormularioUsuarioHumano />
+            }
+     
          
             </ContenedorGenericoCentrado>
         </DisplayPrincipalNoMenu>

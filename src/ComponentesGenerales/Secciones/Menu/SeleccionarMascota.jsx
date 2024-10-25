@@ -6,6 +6,7 @@ import { TxtGenerico } from "../../Generales/Titulos"
 import { ImgPicture } from "../../Generales/Img"
 import { useContext } from "react"
 import { ContextoGeneral } from "../../Contexto/ContextoGeneral"
+import { ContextoFirebase } from "../../Contexto/ContextoFirebase"
 
 
 const ContenedorImg = styled.div`
@@ -53,7 +54,7 @@ const generarBorderRadiusAleatorio = () => {
   
 export const SeleccionarMascota = () =>{
     const {mascotas} = usuarioData;
-    const {usuario} = useContext(ContextoGeneral);
+    const {usuario} = useContext(ContextoFirebase);
 
     console.log(usuario);
     const {setMascotaUsuarioSeleccionada, setSeccionSeleccionada} = useContext(ContextoGeneral);
