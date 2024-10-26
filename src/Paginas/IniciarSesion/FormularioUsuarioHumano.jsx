@@ -89,6 +89,7 @@ const ImagePreviewContainer = styled.label`
 const PlaceholderText = styled.span`
     font-size: 14px;
     color: var(--ColorAzulPrincipal);
+    text-align: center;
 `;
 
 const ImagePreview = styled.img`
@@ -98,7 +99,7 @@ const ImagePreview = styled.img`
 `;
 
 export const FormularioUsuarioHumano = () => {
-    const { AgregarDocumentoId, usuario, setValidadorUsuarioFirebase } = useContext(ContextoFirebase);
+    const { AgregarDocumentoId, usuario, setValidadorUsuarioFirebase, setUsuarioFirebase } = useContext(ContextoFirebase);
     const [file, setFile] = useState(null); 
     const [previewUrl, setPreviewUrl] = useState(null); 
     const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el envío
@@ -109,6 +110,7 @@ export const FormularioUsuarioHumano = () => {
         const idDocumento = await AgregarDocumentoId("users", data, usuario.uid);
         if (idDocumento) {
             console.log("Usuario agregado correctamente con ID:", idDocumento);
+            setUsuarioFirebase({idDocumento:data})
             navigate('/');
         } else {
             console.log("Hubo un problema al agregar el usuario.");
@@ -122,6 +124,7 @@ export const FormularioUsuarioHumano = () => {
             userName: usuario?.displayName || '',
             uid: usuario?.uid || '',
             img: null, 
+            mascotas: [],
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required('El nombre es obligatorio'),
@@ -137,6 +140,7 @@ export const FormularioUsuarioHumano = () => {
                 userName: values.userName,
                 uid: values.uid,
                 img: 'url',
+                mascotas: [],
             };
 
             await agregarUsuario(userData);

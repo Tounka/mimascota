@@ -24,7 +24,7 @@ const ContenedorImg = styled.div`
 
 const ContenedorGridMascota = styled.div`
     display: grid;
-    grid-template-rows: 150px 50px;
+    grid-template-rows: 150px auto;
 
     padding: 10px;
     cursor: pointer;
@@ -42,6 +42,8 @@ const ContenedorHorizontal = styled.div`
 `
 const ContenedorMascotas = styled(ContenedorHorizontal)`
     gap: 5px;
+    display: grid;
+    flex-direction: auto auto;
 
 `
 
@@ -54,10 +56,9 @@ const generarBorderRadiusAleatorio = () => {
   
 export const SeleccionarMascota = () =>{
     const {mascotas} = usuarioData;
-    const {usuario} = useContext(ContextoFirebase);
-
-    console.log(usuario);
+    const {usuario,usuarioFirebase} = useContext(ContextoFirebase);
     const {setMascotaUsuarioSeleccionada, setSeccionSeleccionada} = useContext(ContextoGeneral);
+
     const handleClick = (mascota) =>{
         setMascotaUsuarioSeleccionada(mascota);
         setSeccionSeleccionada('inicio');
@@ -66,7 +67,7 @@ export const SeleccionarMascota = () =>{
         <ContenedorGenerico>
             <TxtGenerico bold size='24px' color='var(--ColorAzulPrincipal)' > Selecciona a nuestro amigo </TxtGenerico>
             <ContenedorHorizontal>
-                {mascotas.map((mascota, index) =>{
+                {usuarioFirebase.mascotas.map((mascota, index) =>{
                     const borderRadiusAleatorio = generarBorderRadiusAleatorio();
                     return(
                     
@@ -77,8 +78,8 @@ export const SeleccionarMascota = () =>{
                         </ContenedorImg>
 
                         <ContenedorMascotas>
-                            <TxtGenerico bold size='16px'> {mascota.nombre} </TxtGenerico>
-                            <TxtGenerico size='16px'> {mascota.raza} </TxtGenerico>
+                            <TxtGenerico margin='0' bold size='16px'> {mascota.nombre} </TxtGenerico>
+                            <TxtGenerico margin='0' size='16px'> {mascota.raza} </TxtGenerico>
 
                         </ContenedorMascotas>
                     </ContenedorGridMascota>    

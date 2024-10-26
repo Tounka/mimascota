@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { ContextoGeneral } from "../../Contexto/ContextoGeneral";
 import { ContenedorGenerico } from '../../Display.jsx/Contenedores';
 import { TxtGenerico } from '../../Generales/Titulos';
+import { ContextoFirebase } from '../../Contexto/ContextoFirebase';
 
 const ContenedorPostStyled = styled.div`
     width: 90%;
@@ -13,9 +14,7 @@ const ContenedorPostStyled = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    
     background-color: #ffffff5a;
-
     border-radius: 20px;
     padding: 10px;
 `;
@@ -25,8 +24,8 @@ const FormStyled = styled.form`
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
     width: 100%;
+    gap: 10px;
 `;
 
 const ContenedorTxt = styled.div`
@@ -59,6 +58,10 @@ const Button = styled.button`
     cursor: pointer;
     &:hover {
         background-color: #0056b3;
+    }
+    &:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
     }
 `;
 
@@ -94,35 +97,61 @@ const ImagePreview = styled.img`
 `;
 
 export const FormularioMascota = () => {
-    const { postSeleccionado } = useContext(ContextoGeneral);
-    const [file, setFile] = useState(null); // Estado para almacenar la imagen seleccionada
-    const [previewUrl, setPreviewUrl] = useState(null); // Estado para la previsualización de la imagen
+    const { postSeleccionado,setSeccionSeleccionada } = useContext(ContextoGeneral);
+    const { usuario,AgregarMascota,subirImagenAImgbb  } = useContext(ContextoFirebase);
+    const [file, setFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const formik = useFormik({
         initialValues: {
-            nombre: postSeleccionado?.nombre || 'Pancho',
-            raza: postSeleccionado?.raza || 'Paco',
+            nombre: postSeleccionado?.nombre || '',
+            raza: postSeleccionado?.raza || '',
+            especie: postSeleccionado?.especie || '',
             relacion: postSeleccionado?.relacion || 'Amigo de ',
-            user: postSeleccionado?.user || 'Pam',
-            img: null, // Placeholder para la imagen
+            user: usuario.uid,
+            img: '',
         },
         validationSchema: Yup.object({
             nombre: Yup.string().required('El nombre es obligatorio'),
             raza: Yup.string().required('La raza es obligatoria'),
+            especie: Yup.string().required('La especie es obligatoria'),
             relacion: Yup.string().required('La relación es obligatoria'),
             user: Yup.string().required('El usuario es obligatorio'),
-            img: Yup.mixed().required('La imagen es obligatoria'), // Validación para la imagen
+            img: Yup.mixed().required('La imagen es obligatoria'),
         }),
-        onSubmit: (values) => {
-            const formData = new FormData();
-            formData.append('nombre', values.nombre);
-            formData.append('raza', values.raza);
-            formData.append('relacion', values.relacion);
-            formData.append('user', values.user);
-            formData.append('img', file); // Agregar la imagen al FormData
+        onSubmit: async (values) => {
+            setIsSubmitting(true); 
 
-            console.log('Formulario enviado con imagen:', formData);
-            // Aquí puedes manejar el guardado del objeto "pet" (por ejemplo, enviarlo a un backend)
+            try {
+                // Espera a que la imagen se suba y obtén la URL
+                const urlImagen = await subirImagenAImgbb(values.img);
+            
+                // Si la imagen se subió correctamente, crea un objeto con los datos
+                if (urlImagen) {
+                    const mascotaData = {
+                        nombre: values.nombre,
+                        raza: values.raza,
+                        especie: values.especie,
+                        relacion: values.relacion,
+                        uid: values.user,
+                        img: urlImagen // Usa la URL de la imagen subida
+                    };
+            
+                    // Llama a la función para agregar la mascota con el objeto de datos
+                    await AgregarMascota(values.user, mascotaData);
+                    
+                    console.log('Formulario enviado con imagen:', values);
+                    setSeccionSeleccionada('seleccionarMascota');
+                } else {
+                    console.error('No se pudo subir la imagen');
+                }
+            } catch (error) {
+                console.error("Error al enviar el formulario:", error);
+            } finally {
+                setIsSubmitting(false);
+            }
+            
         },
     });
 
@@ -131,7 +160,6 @@ export const FormularioMascota = () => {
         setFile(file);
         formik.setFieldValue('img', file);
 
-        // Crear una previsualización de la imagen
         const reader = new FileReader();
         reader.onloadend = () => {
             setPreviewUrl(reader.result);
@@ -144,7 +172,7 @@ export const FormularioMascota = () => {
     return (
         <ContenedorGenerico>
             <ContenedorPostStyled>
-                <TxtGenerico bold size='24px' color ='var(--ColorAzulPrincipal)' >Agrega a tu amiguito</TxtGenerico>
+                <TxtGenerico bold size='24px' color ='var(--ColorAzulPrincipal)'>Agrega a tu amiguito</TxtGenerico>
                 <FormStyled onSubmit={formik.handleSubmit}>
                     <ContenedorTxt>
                         <Label htmlFor='nombre'>Nombre</Label>
@@ -156,6 +184,18 @@ export const FormularioMascota = () => {
                             value={formik.values.nombre}
                         />
                         {formik.errors.nombre ? <div>{formik.errors.nombre}</div> : null}
+                    </ContenedorTxt>
+
+                    <ContenedorTxt>
+                        <Label htmlFor='especie'>Especie</Label>
+                        <Input
+                            id="especie"
+                            name="especie"
+                            type="text"
+                            onChange={formik.handleChange}
+                            value={formik.values.especie}
+                        />
+                        {formik.errors.raza ? <div>{formik.errors.especie}</div> : null}
                     </ContenedorTxt>
 
                     <ContenedorTxt>
@@ -182,28 +222,14 @@ export const FormularioMascota = () => {
                         {formik.errors.relacion ? <div>{formik.errors.relacion}</div> : null}
                     </ContenedorTxt>
 
-                    <ContenedorTxt>
-                        <Label htmlFor='user'>Usuario</Label>
-                        <Input
-                            id="user"
-                            name="user"
-                            type="text"
-                            onChange={formik.handleChange}
-                            value={formik.values.user}
-                        />
-                        {formik.errors.user ? <div>{formik.errors.user}</div> : null}
-                    </ContenedorTxt>
-
-                    {/* Input de archivo oculto */}
                     <InputFile
                         id="img"
                         name="img"
                         type="file"
                         accept="image/*"
-                        onChange={handleFileChange} // Manejar la selección de imagen
+                        onChange={handleFileChange}
                     />
 
-                    {/* Contenedor de previsualización */}
                     <ImagePreviewContainer htmlFor="img">
                         {previewUrl ? (
                             <ImagePreview src={previewUrl} alt="Previsualización de la imagen" />
@@ -214,7 +240,9 @@ export const FormularioMascota = () => {
 
                     {formik.errors.img ? <div>{formik.errors.img}</div> : null}
 
-                    <Button type="submit">Unir a la familia</Button>
+                    <Button type="submit" disabled={isSubmitting}>
+                        {isSubmitting ? "Enviando..." : "Unir a la familia"}
+                    </Button>
                 </FormStyled>
             </ContenedorPostStyled>
         </ContenedorGenerico>
