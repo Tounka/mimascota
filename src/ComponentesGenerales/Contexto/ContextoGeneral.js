@@ -8,7 +8,7 @@ export const ContextoGeneralProvider = ({ children }) => {
     const [seccionSeleccionada, setSeccionSeleccionada] = useState('inicio');
     const [postSeleccionado, setPostSeleccionado] = useState();
     const [mascotaUsuarioSeleccionada, setMascotaUsuarioSeleccionada ] = useState();
-    
+
     const [validadorUsuarioFirebase, setValidadorUsuarioFirebase] = useState(false)
     
 

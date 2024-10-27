@@ -9,6 +9,7 @@ import { SeleccionarMascota } from '../../ComponentesGenerales/Secciones/Menu/Se
 import { UsuarioHumano } from '../../ComponentesGenerales/Secciones/Menu/Usuario';
 import { ContextoFirebase } from '../../ComponentesGenerales/Contexto/ContextoFirebase';
 import { useNavigate } from 'react-router-dom';
+import { FormularioPost } from '../../ComponentesGenerales/Secciones/Menu/FormularioPost';
 
 
 export const AppPrincipal = () => {
@@ -44,6 +45,9 @@ export const AppPrincipal = () => {
           case 'usuarioHumano':
               setSeccion(<UsuarioHumano />);
           break;
+          case 'formularioPost':
+            setSeccion(<FormularioPost />);
+        break;
   
         default:
           setSeccion(<Perfil />); // Valor por defecto

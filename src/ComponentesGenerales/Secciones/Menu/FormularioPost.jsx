@@ -97,67 +97,53 @@ const ImagePreview = styled.img`
     object-fit: cover;
 `;
 
-export const FormularioMascota = () => {
-    const { postSeleccionado,setSeccionSeleccionada } = useContext(ContextoGeneral);
-    const { usuario,AgregarMascota,subirImagenAImgbb  } = useContext(ContextoFirebase);
+export const FormularioPost = () => {
+    const { postSeleccionado,setSeccionSeleccionada, mascotaUsuarioSeleccionada,  } = useContext(ContextoGeneral);
+    const { usuario,AgregarPost,subirImagenAImgbb   } = useContext(ContextoFirebase);
     const [file, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
-    function IdEspecifico() {
-        const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let resultado = "";
-    
-        for (let i = 0; i < 3; i++) {
-            const indiceAleatorio = Math.floor(Math.random() * letras.length);
-            resultado += letras[indiceAleatorio];
-        }
-    
-        return resultado;
-    }
+
     const formik = useFormik({
         initialValues: {
-            nombre: postSeleccionado?.nombre || '',
-            raza: postSeleccionado?.raza || '',
-            especie: postSeleccionado?.especie || '',
-            relacion: postSeleccionado?.relacion || 'Amigo de ',
-            user: usuario.uid,
+            uid: usuario.uid ,
+            mascotaId: mascotaUsuarioSeleccionada?.mascotaId ,
+            titulo: '',
             img: '',
+            fecha: new Date(),
+            parrafo: '',
         },
         validationSchema: Yup.object({
-            nombre: Yup.string().required('El nombre es obligatorio'),
-            raza: Yup.string().required('La raza es obligatoria'),
-            especie: Yup.string().required('La especie es obligatoria'),
-            relacion: Yup.string().required('La relación es obligatoria'),
-            user: Yup.string().required('El usuario es obligatorio'),
+            titulo: Yup.string().required('El titulo es obligatorio'),
+            parrafo: Yup.string().required('El parrafo es obligatoria'),
             img: Yup.mixed().required('La imagen es obligatoria'),
         }),
         onSubmit: async (values) => {
             setIsSubmitting(true); 
 
             try {
-                // Espera a que la imagen se suba y obtén la URL
+                
                 const urlImagen = await subirImagenAImgbb(values.img);
             
-                // Si la imagen se subió correctamente, crea un objeto con los datos
+                
                 if (urlImagen) {
-                    const mascotaData = {
-                        nombre: values.nombre,
-                        raza: values.raza,
-                        especie: values.especie,
-                        relacion: values.relacion,
-                        uid: values.user,
-                        mascotaId: `${values.user}Mascota${values.nombre}${IdEspecifico()}`,
-                        img: urlImagen // Usa la URL de la imagen subida
+                    const postData = {
+                        uid: values.uid,
+                        mascotaId: values.mascotaId ,
+                        titulo: values.titulo,
+                        img: urlImagen,
+                        fecha: values.fecha,
+                        parrafo: values.parrafo,
                     };
             
-                    // Llama a la función para agregar la mascota con el objeto de datos
-                    await AgregarMascota(values.user, mascotaData);
+                
+                    await AgregarPost(postData);
 
                     
-                    console.log('Formulario enviado con imagen:', values);
-                    setSeccionSeleccionada('seleccionarMascota');
+                   
+                    setSeccionSeleccionada('inicial');
                 } else {
                     console.error('No se pudo subir la imagen');
                 }
@@ -187,55 +173,32 @@ export const FormularioMascota = () => {
     return (
         <ContenedorGenerico>
             <ContenedorPostStyled>
-                <TxtGenerico bold size='24px' color ='var(--ColorAzulPrincipal)'>Agrega tu post</TxtGenerico>
+                <TxtGenerico bold size='24px' color ='var(--ColorAzulPrincipal)'>Subir post</TxtGenerico>
                 <FormStyled onSubmit={formik.handleSubmit}>
                     <ContenedorTxt>
-                        <Label htmlFor='nombre'>Nombre</Label>
+                        <Label htmlFor='titulo'>Titulo</Label>
                         <Input
-                            id="nombre"
-                            name="nombre"
+                            id="titulo"
+                            name="titulo"
                             type="text"
                             onChange={formik.handleChange}
-                            value={formik.values.nombre}
+                            value={formik.values.titulo}
                         />
-                        {formik.errors.nombre ? <div>{formik.errors.nombre}</div> : null}
+                        {formik.errors.titulo ? <div>{formik.errors.titulo}</div> : null}
                     </ContenedorTxt>
 
                     <ContenedorTxt>
-                        <Label htmlFor='especie'>Especie</Label>
+                        <Label htmlFor='parrafo'>Párrafo</Label>
                         <Input
-                            id="especie"
-                            name="especie"
+                            id="parrafo"
+                            name="parrafo"
                             type="text"
                             onChange={formik.handleChange}
-                            value={formik.values.especie}
+                            value={formik.values.parrafo}
                         />
-                        {formik.errors.raza ? <div>{formik.errors.especie}</div> : null}
+                        {formik.errors.parrafo ? <div>{formik.errors.parrafo}</div> : null}
                     </ContenedorTxt>
 
-                    <ContenedorTxt>
-                        <Label htmlFor='raza'>Raza</Label>
-                        <Input
-                            id="raza"
-                            name="raza"
-                            type="text"
-                            onChange={formik.handleChange}
-                            value={formik.values.raza}
-                        />
-                        {formik.errors.raza ? <div>{formik.errors.raza}</div> : null}
-                    </ContenedorTxt>
-
-                    <ContenedorTxt>
-                        <Label htmlFor='relacion'>Relación</Label>
-                        <Input
-                            id="relacion"
-                            name="relacion"
-                            type="text"
-                            onChange={formik.handleChange}
-                            value={formik.values.relacion}
-                        />
-                        {formik.errors.relacion ? <div>{formik.errors.relacion}</div> : null}
-                    </ContenedorTxt>
 
                     <InputFile
                         id="img"

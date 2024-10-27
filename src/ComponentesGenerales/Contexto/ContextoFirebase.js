@@ -4,7 +4,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { ContextoGeneral } from './ContextoGeneral';
-import { collection, query, where, getDocs, addDoc, setDoc,  doc, updateDoc, arrayUnion  } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, setDoc,  doc, updateDoc, arrayUnion,limit  } from "firebase/firestore";
 import axios from 'axios';
 import { optimizarImagen } from './FnRedimencionar';
 import { db } from './firebase';
@@ -16,9 +16,29 @@ const kkk = 'b35d2a616d9be3271fce705864773e57';
 export const ContextoFirebaseProvider = ({ children }) => {
     const [usuario, setUsuario] = useState('');
     const [usuarioFirebase, setUsuarioFirebase] = useState(null);
-    const {setSeccionSeleccionada, setValidadorUsuarioFirebase} = useContext(ContextoGeneral);
+    const {setSeccionSeleccionada, setValidadorUsuarioFirebase, setMascotaUsuarioSeleccionada, mascotaUsuarioSeleccionada} = useContext(ContextoGeneral);
     const navigate = useNavigate();
     
+    useEffect(() => {
+        const obtenerDatosMascotaConPosts = async () => {
+            try {
+                const posts = await obtenerPost(mascotaUsuarioSeleccionada.mascotaId);
+                if (posts) {
+                    // Combina los datos de mascotaUsuarioSeleccionada con los posts asociados
+                    const mascotaConPosts = { ...mascotaUsuarioSeleccionada, posts };
+                    console.log(mascotaConPosts);
+                    setMascotaUsuarioSeleccionada(mascotaConPosts);
+
+                }
+            } catch (error) {
+                console.error("Error obteniendo los datos de la mascota con posts:", error);
+            }
+        };
+    
+        if (mascotaUsuarioSeleccionada?.mascotaId) {
+            obtenerDatosMascotaConPosts();
+        }
+    }, [mascotaUsuarioSeleccionada?.mascotaId]);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -63,6 +83,9 @@ export const ContextoFirebaseProvider = ({ children }) => {
                 setUsuarioFirebase(userData);
                 navigate('/');
                 console.log("Usuario Firestore:", userData);
+
+                setMascotaUsuarioSeleccionada(userData?.mascotas[0])
+                
             } else {
                 setValidadorUsuarioFirebase(true);
                 setUsuarioFirebase(null);
@@ -73,6 +96,30 @@ export const ContextoFirebaseProvider = ({ children }) => {
         }
     };
 
+    const obtenerPost = async (mascotaId) => {
+        const postsRef = collection(db, "Post");
+        const q = query(postsRef, where("mascotaId", "==", mascotaId), limit(20));
+    
+        try {
+            const querySnapshot = await getDocs(q);
+    
+            if (!querySnapshot.empty) {
+                // Almacena los datos de todos los documentos encontrados
+                const postsData = querySnapshot.docs.map((doc) => doc.data());
+    
+                console.log("Posts encontrados:", postsData);
+    
+                return postsData; // Devuelve todos los posts encontrados como un arreglo
+            } else {
+                console.log("No se encontraron posts para la mascota:", mascotaId);
+                return []; // Devuelve un arreglo vacío si no hay resultados
+            }
+    
+        } catch (error) {
+            console.error("Error obteniendo los posts de Firestore:", error);
+            return null; // Devuelve null en caso de error
+        }
+    };
     const AgregarDocumento = async (coleccion, datos) => {
     
         try {
@@ -110,8 +157,8 @@ export const ContextoFirebaseProvider = ({ children }) => {
         try {
            
             const usuarioDocRef = doc(db, "users", uid);
-    
-            
+            ObtenerUsuarioFirestore(uid);
+            setSeccionSeleccionada('seleccionarMascota')
             await updateDoc(usuarioDocRef, {
                 mascotas: arrayUnion(mascota)
             });
@@ -119,6 +166,19 @@ export const ContextoFirebaseProvider = ({ children }) => {
             console.log("Mascota agregada correctamente al usuario:", uid);
         } catch (error) {
             console.error("Error al agregar la mascota:", error);
+        }
+    };
+    const AgregarPost = async ( post) => {
+        try {
+            const postCollectionRef = collection(db, "Post");
+            const docRef = await addDoc(postCollectionRef, post);
+    
+            console.log("Post agregado con ID:", docRef.id);
+    
+            setSeccionSeleccionada('inicial');
+    
+        } catch (error) {
+            console.error("Error al agregar el post:", error);
         }
     };
 
@@ -147,7 +207,8 @@ export const ContextoFirebaseProvider = ({ children }) => {
     
 
   return (
-    <ContextoFirebase.Provider value={{usuario,usuarioFirebase, setUsuarioFirebase , cerrarSesion, AgregarDocumento, AgregarDocumentoId, AgregarMascota,subirImagenAImgbb  }}>
+    <ContextoFirebase.Provider value={{usuario,usuarioFirebase, setUsuarioFirebase , cerrarSesion, AgregarDocumento, AgregarDocumentoId, 
+    AgregarMascota, AgregarPost,subirImagenAImgbb  }}>
       {children}
     </ContextoFirebase.Provider>
   );

@@ -37,8 +37,8 @@ const ContenedorImg = styled.div`
     }
 `
 
-export const GridImg = ({ catData = [1, 1, 1, 1, 1] }) => {
-    console.log(catData);
+export const GridImg = ({post = ['']}) => {
+    console.log(post);
     const {setSeccionSeleccionada, setPostSeleccionado} = useContext(ContextoGeneral);
     const handleClick = (card) =>{
         setPostSeleccionado(card);
@@ -46,7 +46,7 @@ export const GridImg = ({ catData = [1, 1, 1, 1, 1] }) => {
     }
     return (
         <ContenedorGridImg>
-            {catData.map((card, index) => (
+            {post.map((card, index) => (
                 <ContenedorImg key={index} onClick={() => handleClick(card) }>
                     <ImgPicture src={card.img} alt='Imagen Grid' />
                 </ContenedorImg>

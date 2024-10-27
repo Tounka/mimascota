@@ -141,6 +141,8 @@ export const FormularioUsuarioHumano = () => {
                 uid: values.uid,
                 img: 'url',
                 mascotas: [],
+                seguidores: [],
+                seguidos: []
             };
 
             await agregarUsuario(userData);

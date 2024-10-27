@@ -64,7 +64,7 @@ const Menu = () =>{
     }
     return( 
         <MenuStyled>
-            <ContenedoresIconos onClick={() => handleClick('iniciarSesion')} >  </ContenedoresIconos>
+            <ContenedoresIconos onClick={() => handleClick('formularioPost')} >  </ContenedoresIconos>
             <ContenedoresIconos onClick={() => handleClick('inicial')} > <MdPets /> </ContenedoresIconos>
             <ContenedoresIconos onClick={() => handleClick('menu')} > <MdMenu /> </ContenedoresIconos>
         </MenuStyled>

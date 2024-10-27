@@ -53,7 +53,7 @@ export const Perfil = () =>{
                 <TxtGenerico size = '16px'  > {user} </TxtGenerico>
             </ContenedorHorizontal>
 
-            <GridImg catData = {catData} />
+            <GridImg post = {mascotaUsuarioSeleccionada.posts} />
 
         </ContenedorGenerico>
     )
