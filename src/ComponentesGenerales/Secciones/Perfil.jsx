@@ -11,8 +11,10 @@ import { ContextoFirebase } from "../Contexto/ContextoFirebase"
 const ContenedorImg = styled.div`
     width: 80%;
     height: 350px;
+    max-height: 30%;
+    max-width: 500px;
     overflow: hidden;
-    border-radius: 30% 70% 70% 30% / 30% 20% 80% 70% ;
+    border-radius: 30% 70% 70% 30% / 30% 60% 80% 70% ;
     img {
         width: 100%;
         height: 100%;
@@ -44,7 +46,7 @@ export const Perfil = () =>{
         <ContenedorGenerico>
             <TxtGenerico size = '28px' bold > {nombre} </TxtGenerico>
             <ContenedorImg>
-                <ImgPicture alt='Img Perfil' src={img} />
+                <ImgPicture fn='modalImgGrande' alt='Img Perfil' src={img} />
             </ContenedorImg>
             <TxtGenerico size = '16px' bold > {raza} </TxtGenerico>
 

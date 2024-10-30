@@ -35,7 +35,6 @@ const ContenedorTxt = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
 `;
 
 const InputFile = styled.input`
@@ -97,9 +96,20 @@ const ImagePreview = styled.img`
     object-fit: cover;
 `;
 
+const ContenedorGenero = styled.div`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+`;
+
+const ContenedorInputs = styled.div`
+    display: flex;
+    gap: 10px;
+`;
+
 export const FormularioMascota = () => {
-    const { postSeleccionado,setSeccionSeleccionada } = useContext(ContextoGeneral);
-    const { usuario,AgregarMascota,subirImagenAImgbb  } = useContext(ContextoFirebase);
+    const { postSeleccionado, setSeccionSeleccionada } = useContext(ContextoGeneral);
+    const { usuario, AgregarMascota, subirImagenAImgbb } = useContext(ContextoFirebase);
     const [file, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -108,14 +118,15 @@ export const FormularioMascota = () => {
     function IdEspecifico() {
         const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         let resultado = "";
-    
+
         for (let i = 0; i < 3; i++) {
             const indiceAleatorio = Math.floor(Math.random() * letras.length);
             resultado += letras[indiceAleatorio];
         }
-    
+
         return resultado;
     }
+
     const formik = useFormik({
         initialValues: {
             nombre: postSeleccionado?.nombre || '',
@@ -134,13 +145,11 @@ export const FormularioMascota = () => {
             img: Yup.mixed().required('La imagen es obligatoria'),
         }),
         onSubmit: async (values) => {
-            setIsSubmitting(true); 
+            setIsSubmitting(true);
 
             try {
-                // Espera a que la imagen se suba y obtén la URL
                 const urlImagen = await subirImagenAImgbb(values.img);
-            
-                // Si la imagen se subió correctamente, crea un objeto con los datos
+
                 if (urlImagen) {
                     const mascotaData = {
                         nombre: values.nombre,
@@ -149,14 +158,10 @@ export const FormularioMascota = () => {
                         relacion: values.relacion,
                         uid: values.user,
                         mascotaId: `${values.user}Mascota${values.nombre}${IdEspecifico()}`,
-                        img: urlImagen // Usa la URL de la imagen subida
+                        img: urlImagen
                     };
-            
-                    // Llama a la función para agregar la mascota con el objeto de datos
-                    await AgregarMascota(values.user, mascotaData);
 
-                    
-                    console.log('Formulario enviado con imagen:', values);
+                    await AgregarMascota(values.user, mascotaData);
                     setSeccionSeleccionada('seleccionarMascota');
                 } else {
                     console.error('No se pudo subir la imagen');
@@ -166,7 +171,6 @@ export const FormularioMascota = () => {
             } finally {
                 setIsSubmitting(false);
             }
-            
         },
     });
 
@@ -187,7 +191,7 @@ export const FormularioMascota = () => {
     return (
         <ContenedorGenerico>
             <ContenedorPostStyled>
-                <TxtGenerico bold size='24px' color ='var(--ColorAzulPrincipal)'>Agrega tu post</TxtGenerico>
+                <TxtGenerico bold size='24px' color ='var(--ColorAzulPrincipal)'>Agrega tu mascota</TxtGenerico>
                 <FormStyled onSubmit={formik.handleSubmit}>
                     <ContenedorTxt>
                         <Label htmlFor='nombre'>Nombre</Label>
@@ -196,9 +200,12 @@ export const FormularioMascota = () => {
                             name="nombre"
                             type="text"
                             onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             value={formik.values.nombre}
                         />
-                        {formik.errors.nombre ? <div>{formik.errors.nombre}</div> : null}
+                        {formik.submitCount > 0 && formik.errors.nombre && (
+                            <div>{formik.errors.nombre}</div>
+                        )}
                     </ContenedorTxt>
 
                     <ContenedorTxt>
@@ -208,9 +215,12 @@ export const FormularioMascota = () => {
                             name="especie"
                             type="text"
                             onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             value={formik.values.especie}
                         />
-                        {formik.errors.raza ? <div>{formik.errors.especie}</div> : null}
+                        {formik.submitCount > 0 && formik.errors.especie && (
+                            <div>{formik.errors.especie}</div>
+                        )}
                     </ContenedorTxt>
 
                     <ContenedorTxt>
@@ -220,21 +230,24 @@ export const FormularioMascota = () => {
                             name="raza"
                             type="text"
                             onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             value={formik.values.raza}
                         />
-                        {formik.errors.raza ? <div>{formik.errors.raza}</div> : null}
+                        {formik.submitCount > 0 && formik.errors.raza && (
+                            <div>{formik.errors.raza}</div>
+                        )}
                     </ContenedorTxt>
 
                     <ContenedorTxt>
-                        <Label htmlFor='relacion'>Relación</Label>
-                        <Input
-                            id="relacion"
-                            name="relacion"
-                            type="text"
-                            onChange={formik.handleChange}
-                            value={formik.values.relacion}
-                        />
-                        {formik.errors.relacion ? <div>{formik.errors.relacion}</div> : null}
+                        <Label htmlFor="relacion">Cual es tu relación</Label>
+                        <ContenedorInputs role="group" aria-labelledby="relacion">
+                            <ContenedorGenero>
+                                {/* Radio inputs for "Amigo", "Hijo", etc. */}
+                            </ContenedorGenero>
+                        </ContenedorInputs>
+                        {formik.submitCount > 0 && formik.errors.relacion && (
+                            <div>{formik.errors.relacion}</div>
+                        )}
                     </ContenedorTxt>
 
                     <InputFile
@@ -253,7 +266,9 @@ export const FormularioMascota = () => {
                         )}
                     </ImagePreviewContainer>
 
-                    {formik.errors.img ? <div>{formik.errors.img}</div> : null}
+                    {formik.submitCount > 0 && formik.errors.img && (
+                        <div>{formik.errors.img}</div>
+                    )}
 
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? "Enviando..." : "Unir a la familia"}

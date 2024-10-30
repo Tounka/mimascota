@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { ImgPicture } from "./Img"
 import { useContext } from "react"
 import { ContextoGeneral } from "../Contexto/ContextoGeneral"
+import { ContextoObjSeleccioado } from "../Contexto/ContextoObjSeleccionados"
 const ContenedorGridImg = styled.div`
     width: 90%;
     min-height: 100px;
@@ -39,10 +40,14 @@ const ContenedorImg = styled.div`
 
 export const GridImg = ({post = ['']}) => {
     console.log(post);
-    const {setSeccionSeleccionada, setPostSeleccionado} = useContext(ContextoGeneral);
+    const {setSeccionSeleccionada, setPostSeleccionado, setBoolSeccionInicio} = useContext(ContextoGeneral);
+    const {setModalSeleccionado} = useContext(ContextoObjSeleccioado);
     const handleClick = (card) =>{
         setPostSeleccionado(card);
         setSeccionSeleccionada('post');
+        setBoolSeccionInicio(true);
+        setModalSeleccionado(['imgGrandeModal', card.img])
+
     }
     return (
         <ContenedorGridImg>

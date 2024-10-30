@@ -4,6 +4,7 @@ import { ImgPicture } from "../Generales/Img"
 import { TxtGenerico } from "../Generales/Titulos"
 import { useContext } from "react"
 import { ContextoGeneral } from "../Contexto/ContextoGeneral"
+import { ContextoObjSeleccioado } from "../Contexto/ContextoObjSeleccionados"
 const ContenedorImg = styled.div`
     width: 100%;
     
@@ -12,7 +13,7 @@ const ContenedorImg = styled.div`
     img {
         width: 100%;
         height: 100%;
-        object-fit: cover; /* Mantiene la proporción de la imagen y rellena el contenedor */
+        object-fit: cover; 
     }
 `
 
@@ -37,6 +38,7 @@ const ContenedorTxt = styled.div`
   
 export const Post = () =>{
     const {postSeleccionado} = useContext(ContextoGeneral);
+   
     console.log(postSeleccionado);
 
     let titulo = postSeleccionado?.titulo || 'Titulo';
@@ -54,7 +56,7 @@ export const Post = () =>{
             <ContenedorPostStyled>
                 <TxtGenerico size = '28px' bold > {titulo} </TxtGenerico>
                 <ContenedorImg>
-                    <ImgPicture src={img}  alt='Imagen principal post' />
+                    <ImgPicture fn ='modalImgGrande' src={img}  alt='Imagen principal post' />
                 </ContenedorImg>
                 <ContenedorTxt>
                     <TxtGenerico size = '18px'  > {parrafo} </TxtGenerico>

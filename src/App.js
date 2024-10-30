@@ -18,6 +18,7 @@ function App() {
       <Routes>
           <Route path = '/iniciarsesion' element = {<IniciarSesion />} default />
           <Route path = '/' element = {<AppPrincipal />}  />
+          
       </Routes>
 
     </DisplayPrincipalNoMenu>
