@@ -39,11 +39,16 @@ export const Post = () =>{
     const {postSeleccionado} = useContext(ContextoGeneral);
     console.log(postSeleccionado);
 
-    let titulo = postSeleccionado?.title || 'Titulo';
+    let titulo = postSeleccionado?.titulo || 'Titulo';
     let img = postSeleccionado?.img || 'https://www.zooplus.es/magazine/wp-content/uploads/2022/01/Psicologia-felina.jpeg';
-    let fecha = postSeleccionado?.date || '12/08/2024';
+    let fecha = postSeleccionado?.fecha.toDate() || '12/08/2024';
     let parrafo = postSeleccionado?.parrafo || 'Soy un parrafo'
 
+    const dia = fecha.getDate().toString().padStart(2, '0');
+    const mes = (fecha.getMonth() + 1).toString().padStart(2, '0'); // Los meses comienzan en 0
+    const anio = fecha.getFullYear();
+
+    const fechaFormateada = `${dia}/${mes}/${anio}`;
     return(
         <ContenedorGenerico>
             <ContenedorPostStyled>
@@ -53,7 +58,7 @@ export const Post = () =>{
                 </ContenedorImg>
                 <ContenedorTxt>
                     <TxtGenerico size = '18px'  > {parrafo} </TxtGenerico>
-                    <TxtGenerico size = '14px'  > {fecha} </TxtGenerico>
+                    <TxtGenerico size = '14px'  > {fechaFormateada} </TxtGenerico>
                 </ContenedorTxt>
 
 

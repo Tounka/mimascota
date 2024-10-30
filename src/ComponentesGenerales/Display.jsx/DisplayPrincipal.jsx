@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { MdPets,MdMenu } from "react-icons/md";
 import { useContext, useState } from "react";
 import { ContextoGeneral } from "../Contexto/ContextoGeneral";
+import { FaPlus } from "react-icons/fa";
 
 const DisplayPrincipalStyled = styled.div`
     display: grid;
@@ -57,19 +58,32 @@ const ContenedoresIconos = styled.div`
     }
 
 `
-const Menu = () =>{
-    const {setSeccionSeleccionada} = useContext(ContextoGeneral);
-    const handleClick = (seccion) => {
-        setSeccionSeleccionada(seccion)
-    }
-    return( 
+const Menu = () => {
+    const { setSeccionSeleccionada, boolSeccionInicio, setBoolSeccionInicio } = useContext(ContextoGeneral);
+    
+    const handleClick = ({ seccion, fnEsp }) => {
+        setSeccionSeleccionada(seccion);
+
+        if (boolSeccionInicio && fnEsp) {
+            setBoolSeccionInicio(false);
+        } else {
+            setBoolSeccionInicio(true);
+        }
+    };
+    
+    return ( 
         <MenuStyled>
-            <ContenedoresIconos onClick={() => handleClick('formularioPost')} >  </ContenedoresIconos>
-            <ContenedoresIconos onClick={() => handleClick('inicial')} > <MdPets /> </ContenedoresIconos>
-            <ContenedoresIconos onClick={() => handleClick('menu')} > <MdMenu /> </ContenedoresIconos>
+            <ContenedoresIconos onClick={() => handleClick({ seccion: 'formularioPost', fnEsp: false })} /> 
+            <ContenedoresIconos onClick={() => handleClick({ seccion: boolSeccionInicio ? 'inicial' : 'formularioPost', fnEsp: true })} > 
+                {boolSeccionInicio ? <MdPets /> : <FaPlus />}  
+            </ContenedoresIconos>
+            <ContenedoresIconos onClick={() => handleClick({ seccion: 'menu', fnEsp: false })} > 
+                <MdMenu /> 
+            </ContenedoresIconos>
         </MenuStyled>
-    )
-}
+    );
+};
+
 
 export const DisplayPrincipalMenu = ({children}) =>{
     return(
