@@ -59,14 +59,14 @@ export const SeccionMenu = ({secciones = [1,1,1,1]}) =>{
 
 
 export const Menu = ({pet}) =>{
-    const seccionPerfil = ['Perfil',[{nombre: 'Perfil', id:'usuarioHumano'}, {nombre: 'Mis Mascotas', id: 'seleccionarMascota'}, {nombre: 'Agregar Mascota', id: 'agregarMascota'}]]
-    const eccionSocial = ['Social',[{nombre: 'Amigos', id:'Amigos'}, {nombre: 'Mis Mascotas', id: 'seleccionarMascota'}, {nombre: 'Agregar Mascota', id: 'agregarMascota'}]]
+    const seccionPerfil = ['Perfil',[{nombre: 'Perfil', id:'usuarioHumano'}, {nombre: 'Mis Mascotas', id: 'seleccionarMascota'}, {nombre: 'Agregar Mascota', id: 'agregarMascota'}]];
+    const seccionSocial = ['Social',[{nombre: 'Seguidores', id:'seguidores'}, {nombre: 'seguidos', id: 'Seguidos'}, {nombre: 'En proceso', id: 'postGuardados'}]];
     return(
         
             
             <MenuPrincipalStyled>
                 <SeccionMenu secciones =  {seccionPerfil} />
-                <SeccionMenu secciones =  {seccionPerfil} />
+                <SeccionMenu secciones =  {seccionSocial} />
                 <SeccionMenu secciones =  {seccionPerfil} />
             </MenuPrincipalStyled>
    
