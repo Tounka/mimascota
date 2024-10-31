@@ -120,6 +120,32 @@ export const ContextoFirebaseProvider = ({ children }) => {
             return null; // Devuelve null en caso de error
         }
     };
+
+        const obtenerPostGeneral = async () => {
+            const postsRef = collection(db, "Post");
+            const q = query(postsRef, limit(20)); // Aquí se pasa `postsRef` como el primer argumento de `query`
+            
+            try {
+                const querySnapshot = await getDocs(q);
+            
+                if (!querySnapshot.empty) {
+                    // Almacena los datos de todos los documentos encontrados
+                    const postsData = querySnapshot.docs.map((doc) => doc.data());
+            
+                    console.log("Posts encontrados:", postsData);
+            
+                    return postsData; // Devuelve todos los posts encontrados como un arreglo
+                } else {
+                    console.log("No se encontraron posts para la mascota:");
+                    return []; // Devuelve un arreglo vacío si no hay resultados
+                }
+            
+            } catch (error) {
+                console.error("Error obteniendo los posts de Firestore:", error);
+                return null; // Devuelve null en caso de error
+            }
+        };
+
     const AgregarDocumento = async (coleccion, datos) => {
     
         try {
@@ -208,7 +234,7 @@ export const ContextoFirebaseProvider = ({ children }) => {
 
   return (
     <ContextoFirebase.Provider value={{usuario,usuarioFirebase, setUsuarioFirebase , cerrarSesion, AgregarDocumento, AgregarDocumentoId, 
-    AgregarMascota, AgregarPost,subirImagenAImgbb  }}>
+    AgregarMascota, AgregarPost,subirImagenAImgbb, obtenerPostGeneral  }}>
       {children}
     </ContextoFirebase.Provider>
   );

@@ -1,4 +1,9 @@
+import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { ContextoFirebase } from "../../Contexto/ContextoFirebase";
+import { ImgPicture } from "../../Generales/Img";
+import { ContextoGeneral } from "../../Contexto/ContextoGeneral";
+import { ContextoObjSeleccioado } from "../../Contexto/ContextoObjSeleccionados";
 
 const imagenes = [1, 1, 1, 1, 1, 1, 1, 1];
 
@@ -10,36 +15,69 @@ const ContenedorGridStyled = styled.div`
     gap: 10px;
     padding: 10px;
     overflow: auto;
+    object-fit: contain;
 `;
 
 const ContenedorFila = styled.div`
     display: flex;
     flex-direction: column;
     height: auto;
+    width: 100%;
     gap: 10px;
 `;
 
 const ContenedorImg = styled.div`
     width: 100%;
-    height: 200px;
-    
+    height: auto;
+
     background-color: red;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover; 
+    }
 `;
 
+
 export const GridBottomPrincipal = () => {
+    const { obtenerPostGeneral } = useContext(ContextoFirebase);
+    const {setSeccionSeleccionada, setPostSeleccionado, setBoolSeccionInicio} = useContext(ContextoGeneral);
+    const {setModalSeleccionado} = useContext(ContextoObjSeleccioado);
+    const [posts, setPosts] = useState([]); 
     const columnas = [[], [], []];
 
-    imagenes.forEach((img, index) => {
+    const handleClick = (card) =>{
+        setPostSeleccionado(card);
+        setSeccionSeleccionada('post');
+        setBoolSeccionInicio(true);
+        setModalSeleccionado(['imgGrandeModal', card.img])
+
+    }
+    useEffect(() => {
+        const fetchPosts = async () => {
+            const data = await obtenerPostGeneral();
+            setPosts(data || []);
+        };
+
+        fetchPosts();
+    }, [obtenerPostGeneral]);
+
+
+    posts.forEach((post, index) => {
+        
         const columnaIndex = index % 3;
         columnas[columnaIndex].push(
-            <ContenedorImg key={index} />
+            <ContenedorImg key={index} onClick={() => handleClick(post)}>
+                <ImgPicture src={post.img} alt='post grid'  />
+            </ContenedorImg>
         );
     });
 
     return (
         <ContenedorGridStyled>
             {columnas.map((columna, index) => (
-                <ContenedorFila key={index}>
+                <ContenedorFila  key={index}>
                     {columna}
                 </ContenedorFila>
             ))}
