@@ -10,6 +10,7 @@ import { UsuarioHumano } from '../../ComponentesGenerales/Secciones/Menu/Usuario
 import { ContextoFirebase } from '../../ComponentesGenerales/Contexto/ContextoFirebase';
 import { useNavigate } from 'react-router-dom';
 import { FormularioPost } from '../../ComponentesGenerales/Secciones/Menu/FormularioPost';
+import { BuscadorSeccion } from '../../ComponentesGenerales/Secciones/SeccionBuscador';
 
 
 export const AppPrincipal = () => {
@@ -48,6 +49,9 @@ export const AppPrincipal = () => {
           case 'formularioPost':
             setSeccion(<FormularioPost />);
         break;
+        case 'buscadorSeccion':
+          setSeccion(<BuscadorSeccion />);
+      break;
   
         default:
           setSeccion(<Perfil />); // Valor por defecto

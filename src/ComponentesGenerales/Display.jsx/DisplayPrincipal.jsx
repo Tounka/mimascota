@@ -3,7 +3,7 @@ import { MdPets,MdMenu } from "react-icons/md";
 import { useContext, useState } from "react";
 import { ContextoGeneral } from "../Contexto/ContextoGeneral";
 import { FaPlus } from "react-icons/fa";
-
+import { IoGrid } from "react-icons/io5";
 const DisplayPrincipalStyled = styled.div`
     display: grid;
     grid-template-rows:  auto 80px;
@@ -33,7 +33,7 @@ const MenuStyled = styled.div`
     bottom: 0;
 `
 const ContenedorChidren = styled.div`
- height: 100%;
+    height: 100%;
     width: 100%;
     background-color: var(--ColorVerdePrincipal);
     margin-bottom: ${props => props.margin ? '100px' : ''} ;
@@ -73,7 +73,9 @@ const Menu = () => {
     
     return ( 
         <MenuStyled>
-            <ContenedoresIconos onClick={() => handleClick({ seccion: 'formularioPost', fnEsp: false })} /> 
+            <ContenedoresIconos onClick={() => handleClick({ seccion: 'buscadorSeccion', fnEsp: false })} >
+                <IoGrid />
+            </ContenedoresIconos>
             <ContenedoresIconos onClick={() => handleClick({ seccion: boolSeccionInicio ? 'inicial' : 'formularioPost', fnEsp: true })} > 
                 {boolSeccionInicio ? <MdPets /> : <FaPlus />}  
             </ContenedoresIconos>
