@@ -38,8 +38,7 @@ const ContenedorImg = styled.div`
     }
 `
 
-export const GridImg = ({post = ['']}) => {
-    console.log(post);
+export const GridImg = ({post = []}) => {
     const {setSeccionSeleccionada, setPostSeleccionado, setBoolSeccionInicio} = useContext(ContextoGeneral);
     const {setModalSeleccionado} = useContext(ContextoObjSeleccioado);
     const handleClick = (card) =>{

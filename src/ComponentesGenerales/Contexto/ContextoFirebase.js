@@ -9,6 +9,7 @@ import axios from 'axios';
 import { optimizarImagen } from './FnRedimencionar';
 import { db } from './firebase';
 import firebase from 'firebase/compat/app';
+import { ContextoObjSeleccioado } from './ContextoObjSeleccionados';
 export const ContextoFirebase = createContext();
 const kkk = 'b35d2a616d9be3271fce705864773e57'; 
 
@@ -16,15 +17,18 @@ const kkk = 'b35d2a616d9be3271fce705864773e57';
 export const ContextoFirebaseProvider = ({ children }) => {
     const [usuario, setUsuario] = useState('');
     const [usuarioFirebase, setUsuarioFirebase] = useState(null);
+    const [validarUsuarioDiferente, setValidarUsuarioDiferente] = useState(false);
     const {setSeccionSeleccionada, setValidadorUsuarioFirebase, setMascotaUsuarioSeleccionada, mascotaUsuarioSeleccionada} = useContext(ContextoGeneral);
+    const {perfilMascotaSeleccionada, setPerfilMascotaSeleccionada} = useContext(ContextoObjSeleccioado);
     const navigate = useNavigate();
+    
+    
     
     useEffect(() => {
         const obtenerDatosMascotaConPosts = async () => {
             try {
                 const posts = await obtenerPost(mascotaUsuarioSeleccionada.mascotaId);
                 if (posts) {
-                    // Combina los datos de mascotaUsuarioSeleccionada con los posts asociados
                     const mascotaConPosts = { ...mascotaUsuarioSeleccionada, posts };
                     console.log(mascotaConPosts);
                     setMascotaUsuarioSeleccionada(mascotaConPosts);
@@ -41,6 +45,27 @@ export const ContextoFirebaseProvider = ({ children }) => {
     }, [mascotaUsuarioSeleccionada?.mascotaId]);
 
     useEffect(() => {
+        console.log(perfilMascotaSeleccionada, 'Hola')
+        const obtenerDatosMascotaConPostsOut = async () => {
+            try {
+                const posts = await obtenerPost(perfilMascotaSeleccionada.mascotaId);
+                if (posts) {
+                    const mascotaConPosts = { ...perfilMascotaSeleccionada, posts };
+                    console.log(mascotaConPosts, 'postOut');
+                    setPerfilMascotaSeleccionada(mascotaConPosts);
+
+                }
+            } catch (error) {
+                console.error("Error obteniendo los datos de la mascota con posts:", error);
+            }
+        };
+    
+        if (perfilMascotaSeleccionada?.mascotaId) {
+            obtenerDatosMascotaConPostsOut();
+        }
+    }, [perfilMascotaSeleccionada?.mascotaId]);
+
+    useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUsuario(user);
@@ -48,6 +73,7 @@ export const ContextoFirebaseProvider = ({ children }) => {
                 if(usuarioFirebase){
                     
                     setSeccionSeleccionada('inicial');
+                    
                     
                     
                 }
@@ -146,6 +172,37 @@ export const ContextoFirebaseProvider = ({ children }) => {
             }
         };
 
+        const obtenerMascotasSearch = async (q) => {
+            const usersRef = collection(db, "users");
+        
+            try {
+                const querySnapshot = await getDocs(usersRef); // No es necesario pasar query ya que estamos obteniendo todos los usuarios
+                const mascotasJuan = [];
+        
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const mascotas = data.mascotas || [];
+        
+                    mascotas.forEach((mascota) => {
+                        if (mascota.nombre === q || mascota.especie === q) {
+                            mascotasJuan.push(mascota);
+                        }
+                    });
+                });
+        
+                console.log("Mascotas con nombre o raza igual a:", q, mascotasJuan);
+                return mascotasJuan; // Devuelve el arreglo con las mascotas filtradas
+        
+            } catch (error) {
+                console.error("Error obteniendo mascotas de Firestore:", error);
+                return []; // Devuelve un arreglo vacío en caso de error
+            }
+        };
+
+    
+        
+        
+
     const AgregarDocumento = async (coleccion, datos) => {
     
         try {
@@ -234,7 +291,7 @@ export const ContextoFirebaseProvider = ({ children }) => {
 
   return (
     <ContextoFirebase.Provider value={{usuario,usuarioFirebase, setUsuarioFirebase , cerrarSesion, AgregarDocumento, AgregarDocumentoId, 
-    AgregarMascota, AgregarPost,subirImagenAImgbb, obtenerPostGeneral  }}>
+    AgregarMascota, AgregarPost,subirImagenAImgbb, obtenerPostGeneral, obtenerMascotasSearch  }}>
       {children}
     </ContextoFirebase.Provider>
   );

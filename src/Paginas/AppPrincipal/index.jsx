@@ -11,7 +11,7 @@ import { ContextoFirebase } from '../../ComponentesGenerales/Contexto/ContextoFi
 import { useNavigate } from 'react-router-dom';
 import { FormularioPost } from '../../ComponentesGenerales/Secciones/Menu/FormularioPost';
 import { BuscadorSeccion } from '../../ComponentesGenerales/Secciones/SeccionBuscador';
-
+import { PerfilOtrasMascotas } from '../../ComponentesGenerales/Secciones/Perfil';
 
 export const AppPrincipal = () => {
   const [seccion, setSeccion] = useState(null);
@@ -52,6 +52,10 @@ export const AppPrincipal = () => {
         case 'buscadorSeccion':
           setSeccion(<BuscadorSeccion />);
       break;
+      case 'perfilOtrasMascotas':
+        setSeccion(<PerfilOtrasMascotas />);
+      break;
+      
   
         default:
           setSeccion(<Perfil />); // Valor por defecto

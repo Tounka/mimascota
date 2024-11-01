@@ -157,6 +157,8 @@ export const FormularioMascota = () => {
                         especie: values.especie,
                         relacion: values.relacion,
                         uid: values.user,
+                        seguidores: [],
+                        seguidos: [],
                         mascotaId: `${values.user}Mascota${values.nombre}${IdEspecifico()}`,
                         img: urlImagen
                     };

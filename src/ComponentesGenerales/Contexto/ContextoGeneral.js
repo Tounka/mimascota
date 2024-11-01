@@ -12,10 +12,11 @@ export const ContextoGeneralProvider = ({ children }) => {
     const [boolModalGeneral, setBoolModalGeneral] = useState(false);
     const [mascotaUsuarioSeleccionada, setMascotaUsuarioSeleccionada ] = useState();
 
+
     const [validadorUsuarioFirebase, setValidadorUsuarioFirebase] = useState(false)
     
 
-
+  
   return (
     <ContextoGeneral.Provider value={{ seccionSeleccionada, setSeccionSeleccionada,postSeleccionado, 
     setPostSeleccionado,mascotaUsuarioSeleccionada ,setMascotaUsuarioSeleccionada, validadorUsuarioFirebase,setValidadorUsuarioFirebase,
