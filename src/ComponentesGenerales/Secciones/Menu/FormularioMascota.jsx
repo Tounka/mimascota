@@ -159,7 +159,7 @@ export const FormularioMascota = () => {
                         uid: values.user,
                         seguidores: [],
                         seguidos: [],
-                        mascotaId: `${values.user}Mascota${values.nombre}${IdEspecifico()}`,
+                        mascotaId: ``,
                         img: urlImagen
                     };
 

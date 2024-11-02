@@ -56,10 +56,10 @@ const Txt = styled.p`
   
   
 export const Perfil = () =>{
-    const {mascotaUsuarioSeleccionada} = useContext(ContextoGeneral);
+    const {mascotaUsuarioSeleccionada, misPost} = useContext(ContextoGeneral);
     const {usuarioFirebase} = useContext(ContextoFirebase);
 
-    
+
     const boolMiPerfil = false;
 
     const nombre = mascotaUsuarioSeleccionada?.nombre || 'Pancho';
@@ -104,7 +104,7 @@ export const Perfil = () =>{
                 </ContenedorSeccion>
 
             </ContenedorPerfil>
-            <GridImg post = {mascotaUsuarioSeleccionada.posts} />
+            <GridImg post = {misPost} />
 
         </ContenedorGenerico>
     )
@@ -112,15 +112,41 @@ export const Perfil = () =>{
 
 
 export const PerfilOtrasMascotas = () =>{
-    const {perfilMascotaSeleccionada} = useContext(ContextoObjSeleccioado);
-    const {usuarioFirebase} = useContext(ContextoFirebase);
+    const {perfilMascotaSeleccionada,setPerfilMascotaSeleccionada} = useContext(ContextoObjSeleccioado);
+    const {mascotaUsuarioSeleccionada, setMascotaUsuarioSeleccionada} = useContext(ContextoGeneral);
+    const {usuarioFirebase, obtenerPost, ObtenerDocumentoFirestore} = useContext(ContextoFirebase);
     const [boolSeguido, setBoolSeguido] = useState(false);
+    const [post, setPost] = useState();
+
+    useEffect(() => {
+        const fetchPosts = async () => {
+            const todosLosPost = await obtenerPost(perfilMascotaSeleccionada?.mascotaId);
+            setPost(todosLosPost);
+        };
+        if(perfilMascotaSeleccionada){
+            fetchPosts();
+        }
+    }, [perfilMascotaSeleccionada]);
+    useEffect(() => {
+        const fetchPerfil = async () => {
+            const mascota = await ObtenerDocumentoFirestore('mascotas' ,perfilMascotaSeleccionada?.mascotaId);
+            setPerfilMascotaSeleccionada(mascota);
+        };
+        if(perfilMascotaSeleccionada){
+            fetchPerfil();
+            console.log('asdasda')
+        }
+    }, [boolSeguido]);
+    
 
     const VerificarSeguidores = () =>{
-        if(usuarioFirebase?.seguidos.includes(perfilMascotaSeleccionada?.mascotaId)){
+        if(perfilMascotaSeleccionada?.seguidores.includes(mascotaUsuarioSeleccionada?.mascotaId)){
             setBoolSeguido(true)
+ 
+
         }else{
             setBoolSeguido(false)
+
         }
     }
     useEffect(() =>{
@@ -155,7 +181,7 @@ export const PerfilOtrasMascotas = () =>{
                 <ContenedorSeccion left>
                     <ContenedorHorizontal gap = '20px'>
                         <TxtGenerico size = '28px' bold > {nombre} </TxtGenerico>
-                        <BtnSeguir seguido={boolSeguido} />
+                        <BtnSeguir boolSeguido={boolSeguido} setBoolSeguido={setBoolSeguido} mascotaParaSeguir={perfilMascotaSeleccionada} />
                     </ContenedorHorizontal>
                     <TxtGenerico size = '16px' bold > {raza} </TxtGenerico>
                     
@@ -172,7 +198,7 @@ export const PerfilOtrasMascotas = () =>{
                 </ContenedorSeccion>
 
             </ContenedorPerfil>
-                <GridImg post = {perfilMascotaSeleccionada.posts} />
+                <GridImg post = {post} />
             
 
         </ContenedorGenerico>

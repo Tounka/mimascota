@@ -7,6 +7,8 @@ export const ContextoGeneral = createContext();
 export const ContextoGeneralProvider = ({ children }) => {
     const [seccionSeleccionada, setSeccionSeleccionada] = useState('inicio');
     const [postSeleccionado, setPostSeleccionado] = useState();
+    const [misMascotas, setMisMascotas] = useState();
+    const [misPost, setMisPost] = useState();
 
     const [boolSeccionInicio, setBoolSeccionInicio] = useState(false);
     const [boolModalGeneral, setBoolModalGeneral] = useState(false);
@@ -20,7 +22,7 @@ export const ContextoGeneralProvider = ({ children }) => {
   return (
     <ContextoGeneral.Provider value={{ seccionSeleccionada, setSeccionSeleccionada,postSeleccionado, 
     setPostSeleccionado,mascotaUsuarioSeleccionada ,setMascotaUsuarioSeleccionada, validadorUsuarioFirebase,setValidadorUsuarioFirebase,
-    boolSeccionInicio,setBoolSeccionInicio,boolModalGeneral,setBoolModalGeneral   }}>
+    boolSeccionInicio,setBoolSeccionInicio,boolModalGeneral,setBoolModalGeneral, misMascotas,setMisMascotas,setMisPost,misPost  }}>
       {children}
     </ContextoGeneral.Provider>
   );

@@ -55,10 +55,10 @@ const generarBorderRadiusAleatorio = () => {
   
   
 export const SeleccionarMascota = () =>{
-    const {mascotas} = usuarioData;
+    
     const {usuario,usuarioFirebase} = useContext(ContextoFirebase);
-    const {setMascotaUsuarioSeleccionada, setSeccionSeleccionada} = useContext(ContextoGeneral);
-
+    const {setMascotaUsuarioSeleccionada, setSeccionSeleccionada, misMascotas} = useContext(ContextoGeneral);
+ 
     const handleClick = (mascota) =>{
         setMascotaUsuarioSeleccionada(mascota);
         setSeccionSeleccionada('inicio');
@@ -67,7 +67,7 @@ export const SeleccionarMascota = () =>{
         <ContenedorGenerico>
             <TxtGenerico bold size='24px' color='var(--ColorAzulPrincipal)' > Selecciona a nuestro amigo </TxtGenerico>
             <ContenedorHorizontal>
-                {usuarioFirebase.mascotas.map((mascota, index) =>{
+                {misMascotas?.map((mascota, index) =>{
                     const borderRadiusAleatorio = generarBorderRadiusAleatorio();
                     return(
                     

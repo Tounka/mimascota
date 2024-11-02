@@ -15,63 +15,69 @@ import { PerfilOtrasMascotas } from '../../ComponentesGenerales/Secciones/Perfil
 
 export const AppPrincipal = () => {
   const [seccion, setSeccion] = useState(null);
-  const { seccionSeleccionada } = useContext(ContextoGeneral);
-  const {usuarioFirebase,usuario} = useContext(ContextoFirebase); 
-
+  const { seccionSeleccionada, setMisMascotas,setMascotaUsuarioSeleccionada } = useContext(ContextoGeneral);
+  const {usuarioFirebase,cerrarSesion, obtenerMisMascotas} = useContext(ContextoFirebase); 
   const navigate = useNavigate();
-
-
+  
   useEffect(() => {
-    
-    if(usuarioFirebase == null || usuarioFirebase == undefined){
-      navigate('/iniciarSesion')
-    }else if(usuarioFirebase?.mascotas != null){
+    const fetchMascotas = async () => {
+        if (usuarioFirebase) {
+            const mascotas = await obtenerMisMascotas(usuarioFirebase?.uid);
+            setMisMascotas(mascotas);
+            if(mascotas.length >= 0){
+              setMascotaUsuarioSeleccionada(mascotas[0]);
+            }
+        }
+    };
 
+
+    fetchMascotas();
+}, [usuarioFirebase ]);
+useEffect(() => {
+  if (usuarioFirebase == null || usuarioFirebase == undefined) {
+      navigate('/iniciarSesion');
+  } else if (usuarioFirebase?.mascotas?.length === 0) {
+      setSeccion(<FormularioMascota />);
+  } else if (usuarioFirebase?.mascotas != null) {
       switch (seccionSeleccionada) {
-        case 'inicial':
-          setSeccion(<Perfil />);
-          break;
-        case 'menu':
-          setSeccion(<Menu />);
-          break;
-        case 'post':
-          setSeccion(<Post />);
-          break;
-        case 'agregarMascota':
-          setSeccion(<FormularioMascota />);
-          break;
-        case 'seleccionarMascota':
-          setSeccion(<SeleccionarMascota />);
-          break;
+          case 'inicial':
+              setSeccion(<Perfil />);
+              break;
+          case 'menu':
+              setSeccion(<Menu />);
+              break;
+          case 'post':
+              setSeccion(<Post />);
+              break;
+          case 'agregarMascota':
+              setSeccion(<FormularioMascota />);
+              break;
+          case 'seleccionarMascota':
+              setSeccion(<SeleccionarMascota />);
+              break;
           case 'usuarioHumano':
               setSeccion(<UsuarioHumano />);
-          break;
+              break;
           case 'formularioPost':
-            setSeccion(<FormularioPost />);
-        break;
-        case 'buscadorSeccion':
-          setSeccion(<BuscadorSeccion />);
-      break;
-      case 'perfilOtrasMascotas':
-        setSeccion(<PerfilOtrasMascotas />);
-      break;
-      
-  
-        default:
-          setSeccion(<Perfil />); // Valor por defecto
+              setSeccion(<FormularioPost />);
+              break;
+          case 'buscadorSeccion':
+              setSeccion(<BuscadorSeccion />);
+              break;
+          case 'perfilOtrasMascotas':
+              setSeccion(<PerfilOtrasMascotas />);
+              break;
+          case 'cerrarSesion':
+              cerrarSesion();
+              break;
+          default:
+              setSeccion(<Perfil />);
       }
-    }
-    else{
-      setSeccion(<FormularioMascota />);
-    }
-    
+  }
+}, [seccionSeleccionada, usuarioFirebase]);
 
-  
-  }, [seccionSeleccionada,usuarioFirebase]);
-
-  // Mientras se verifica la autenticación o si no hay sección seleccionada
   if (!seccionSeleccionada) {
-    return <div>Cargando...</div>; // Puedes personalizar esto como prefieras
+    return <div>Cargando...</div>; 
   }
 
   return (

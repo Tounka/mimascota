@@ -100,6 +100,8 @@ const ImagePreview = styled.img`
 
 export const FormularioUsuarioHumano = () => {
     const { AgregarDocumentoId, usuario, setValidadorUsuarioFirebase, setUsuarioFirebase } = useContext(ContextoFirebase);
+    
+
     const [file, setFile] = useState(null); 
     const [previewUrl, setPreviewUrl] = useState(null); 
     const [isSubmitting, setIsSubmitting] = useState(false); // Estado para controlar el envío
@@ -147,6 +149,7 @@ export const FormularioUsuarioHumano = () => {
             };
 
             await agregarUsuario(userData);
+            
             setValidadorUsuarioFirebase(true);
             setIsSubmitting(false); 
             console.log('Formulario enviado con datos:', userData);

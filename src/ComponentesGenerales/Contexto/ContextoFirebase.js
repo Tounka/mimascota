@@ -4,82 +4,51 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { ContextoGeneral } from './ContextoGeneral';
-import { collection, query, where, getDocs, addDoc, setDoc,  doc, updateDoc, arrayUnion,limit  } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc, setDoc, doc, updateDoc, arrayUnion, limit, getDoc } from "firebase/firestore";
 import axios from 'axios';
 import { optimizarImagen } from './FnRedimencionar';
 import { db } from './firebase';
-import firebase from 'firebase/compat/app';
 import { ContextoObjSeleccioado } from './ContextoObjSeleccionados';
-export const ContextoFirebase = createContext();
-const kkk = 'b35d2a616d9be3271fce705864773e57'; 
 
+export const ContextoFirebase = createContext();
+const kkk = 'b35d2a616d9be3271fce705864773e57';
 
 export const ContextoFirebaseProvider = ({ children }) => {
     const [usuario, setUsuario] = useState('');
     const [usuarioFirebase, setUsuarioFirebase] = useState(null);
-    const [validarUsuarioDiferente, setValidarUsuarioDiferente] = useState(false);
-    const {setSeccionSeleccionada, setValidadorUsuarioFirebase, setMascotaUsuarioSeleccionada, mascotaUsuarioSeleccionada} = useContext(ContextoGeneral);
-    const {perfilMascotaSeleccionada, setPerfilMascotaSeleccionada} = useContext(ContextoObjSeleccioado);
+    const [actualizador, setActualizador] = useState(1);
+    const { setSeccionSeleccionada, setValidadorUsuarioFirebase, setMascotaUsuarioSeleccionada, mascotaUsuarioSeleccionada,setMisPost } = useContext(ContextoGeneral);
+    const { perfilMascotaSeleccionada, setPerfilMascotaSeleccionada } = useContext(ContextoObjSeleccioado);
     const navigate = useNavigate();
-    
-    
-    
-    useEffect(() => {
-        const obtenerDatosMascotaConPosts = async () => {
-            try {
-                const posts = await obtenerPost(mascotaUsuarioSeleccionada.mascotaId);
-                if (posts) {
-                    const mascotaConPosts = { ...mascotaUsuarioSeleccionada, posts };
-                    console.log(mascotaConPosts);
-                    setMascotaUsuarioSeleccionada(mascotaConPosts);
 
-                }
-            } catch (error) {
-                console.error("Error obteniendo los datos de la mascota con posts:", error);
+    useEffect(() => {
+        const fetchMisPost = async () => {
+            if (!mascotaUsuarioSeleccionada?.mascotaId) {
+                console.error("No hay mascotaId seleccionado");
+                return;
             }
+            const misPost = await obtenerPost(mascotaUsuarioSeleccionada.mascotaId);
+            setMisPost(misPost);
         };
     
         if (mascotaUsuarioSeleccionada?.mascotaId) {
-            obtenerDatosMascotaConPosts();
+            fetchMisPost();
         }
-    }, [mascotaUsuarioSeleccionada?.mascotaId]);
-
-    useEffect(() => {
-        console.log(perfilMascotaSeleccionada, 'Hola')
-        const obtenerDatosMascotaConPostsOut = async () => {
-            try {
-                const posts = await obtenerPost(perfilMascotaSeleccionada.mascotaId);
-                if (posts) {
-                    const mascotaConPosts = { ...perfilMascotaSeleccionada, posts };
-                    console.log(mascotaConPosts, 'postOut');
-                    setPerfilMascotaSeleccionada(mascotaConPosts);
-
-                }
-            } catch (error) {
-                console.error("Error obteniendo los datos de la mascota con posts:", error);
-            }
-        };
+    }, [mascotaUsuarioSeleccionada,actualizador]);
     
-        if (perfilMascotaSeleccionada?.mascotaId) {
-            obtenerDatosMascotaConPostsOut();
-        }
-    }, [perfilMascotaSeleccionada?.mascotaId]);
+    
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setUsuario(user);
-                ObtenerUsuarioFirestore(user.uid)
-                if(usuarioFirebase){
-                    
+                ObtenerUsuarioFirestore(user.uid);
+                if (usuarioFirebase) {
                     setSeccionSeleccionada('inicial');
-                    
-                    
-                    
                 }
             } else {
                 setUsuario(null);
-                navigate('/iniciarsesion')
+                navigate('/iniciarsesion');
                 setSeccionSeleccionada('iniciarSesion');
             }
         });
@@ -91,175 +60,200 @@ export const ContextoFirebaseProvider = ({ children }) => {
         try {
             await signOut(auth);
             setUsuario(null);
-            navigate('/iniciarsesion'); 
+            navigate('/iniciarsesion');
         } catch (error) {
             console.error("Error al cerrar sesión: ", error);
         }
     };
 
     const ObtenerUsuarioFirestore = async (uid) => {
+        if (!uid) {
+            console.error("UID no proporcionado para obtener el usuario de Firestore.");
+            return;
+        }
+    
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("uid", "==", uid));
-
+    
         try {
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
-                // Almacena los datos del primer documento encontrado
                 const userData = querySnapshot.docs[0].data();
                 setUsuarioFirebase(userData);
                 navigate('/');
                 console.log("Usuario Firestore:", userData);
-
-                setMascotaUsuarioSeleccionada(userData?.mascotas[0])
-                
+                setMascotaUsuarioSeleccionada(userData?.mascotas[0]);
             } else {
                 setValidadorUsuarioFirebase(true);
                 setUsuarioFirebase(null);
             }
-
         } catch (error) {
             console.error("Error obteniendo el usuario de Firestore: ", error);
         }
     };
 
     const obtenerPost = async (mascotaId) => {
-        const postsRef = collection(db, "Post");
+        if (!mascotaId) {
+            console.error("mascotaId es undefined o null");
+            return [];
+        }
+        
+        const postsRef = collection(db, "post");
         const q = query(postsRef, where("mascotaId", "==", mascotaId), limit(20));
-    
         try {
             const querySnapshot = await getDocs(q);
-    
             if (!querySnapshot.empty) {
-                // Almacena los datos de todos los documentos encontrados
                 const postsData = querySnapshot.docs.map((doc) => doc.data());
-    
                 console.log("Posts encontrados:", postsData);
-    
-                return postsData; // Devuelve todos los posts encontrados como un arreglo
+                return postsData;
             } else {
                 console.log("No se encontraron posts para la mascota:", mascotaId);
-                return []; // Devuelve un arreglo vacío si no hay resultados
+                return [];
             }
-    
         } catch (error) {
             console.error("Error obteniendo los posts de Firestore:", error);
-            return null; // Devuelve null en caso de error
+            return [];
         }
     };
 
-        const obtenerPostGeneral = async () => {
-            const postsRef = collection(db, "Post");
-            const q = query(postsRef, limit(20)); // Aquí se pasa `postsRef` como el primer argumento de `query`
-            
-            try {
-                const querySnapshot = await getDocs(q);
-            
-                if (!querySnapshot.empty) {
-                    // Almacena los datos de todos los documentos encontrados
-                    const postsData = querySnapshot.docs.map((doc) => doc.data());
-            
-                    console.log("Posts encontrados:", postsData);
-            
-                    return postsData; // Devuelve todos los posts encontrados como un arreglo
-                } else {
-                    console.log("No se encontraron posts para la mascota:");
-                    return []; // Devuelve un arreglo vacío si no hay resultados
-                }
-            
-            } catch (error) {
-                console.error("Error obteniendo los posts de Firestore:", error);
-                return null; // Devuelve null en caso de error
+    const obtenerPostGeneral = async () => {
+        const postsRef = collection(db, "post");
+        const q = query(postsRef, limit(20));
+        try {
+            const querySnapshot = await getDocs(q);
+            if (!querySnapshot.empty) {
+                const postsData = querySnapshot.docs.map((doc) => doc.data());
+                console.log("Posts encontrados:", postsData);
+                return postsData;
+            } else {
+                console.log("No se encontraron posts para la mascota:");
+                return [];
             }
-        };
+        } catch (error) {
+            console.error("Error obteniendo los posts de Firestore:", error);
+            return null;
+        }
+    };
 
-        const obtenerMascotasSearch = async (q) => {
-            const usersRef = collection(db, "users");
-        
-            try {
-                const querySnapshot = await getDocs(usersRef); // No es necesario pasar query ya que estamos obteniendo todos los usuarios
-                const mascotasJuan = [];
-        
-                querySnapshot.forEach((doc) => {
-                    const data = doc.data();
-                    const mascotas = data.mascotas || [];
-        
-                    mascotas.forEach((mascota) => {
-                        if (mascota.nombre === q || mascota.especie === q) {
-                            mascotasJuan.push(mascota);
-                        }
-                    });
-                });
-        
-                console.log("Mascotas con nombre o raza igual a:", q, mascotasJuan);
-                return mascotasJuan; // Devuelve el arreglo con las mascotas filtradas
-        
-            } catch (error) {
-                console.error("Error obteniendo mascotas de Firestore:", error);
-                return []; // Devuelve un arreglo vacío en caso de error
-            }
-        };
-
+    const obtenerMascotasSearch = async (q) => {
+        try {
+            const mascotasRef = collection(db, "mascotas");
     
+            // Consultas separadas
+            const consultaNombre = query(mascotasRef, where("nombre", "==", q));
+            const consultaEspecie = query(mascotasRef, where("especie", "==", q));
+    
+            const [snapshotNombre, snapshotEspecie] = await Promise.all([
+                getDocs(consultaNombre),
+                getDocs(consultaEspecie),
+            ]);
+    
+            const mascotasArreglo = [];
+    
+            snapshotNombre.forEach((doc) => mascotasArreglo.push({ id: doc.id, ...doc.data() }));
+            snapshotEspecie.forEach((doc) => {
+                const mascota = { id: doc.id, ...doc.data() };
+                if (!mascotasArreglo.some((m) => m.id === mascota.id)) {
+                    mascotasArreglo.push(mascota);
+                }
+            });
+    
+            console.log("Mascotas con nombre o especie igual a:", q, mascotasArreglo);
+            return mascotasArreglo;
+        } catch (error) {
+            console.error("Error obteniendo mascotas de Firestore:", error);
+            return [];
+        }
+    };
+    
+const obtenerMisMascotas = async (idUsuario) => {
+    if (!idUsuario) {
+        console.error("ID de usuario no proporcionado para obtener las mascotas.");
+        return [];
+    }
+
+    const mascotasRef = collection(db, "mascotas");
+    const q = query(mascotasRef, where("uid", "==", idUsuario));
+
+    try {
+        const querySnapshot = await getDocs(q);
+        const mascotasArreglo = [];
         
+        querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            mascotasArreglo.push(data);
+        });
         
+        console.log(mascotasArreglo, 'return');
+        return mascotasArreglo;
+    } catch (error) {
+        console.error("Error obteniendo mascotas de Firestore:", error);
+        return [];
+    }
+};
+
 
     const AgregarDocumento = async (coleccion, datos) => {
-    
         try {
-            // Referencia a la colección en Firestore
             const coleccionRef = collection(db, coleccion);
-    
-            // Agregar el documento a la colección
             const docRef = await addDoc(coleccionRef, datos);
-            
             console.log("Documento agregado con ID:", docRef.id);
-            return docRef.id; // Devuelve el ID del documento si necesitas referenciarlo más adelante
+            return docRef.id;
         } catch (error) {
             console.error("Error al agregar el documento:", error);
-            return null; // Devuelve null en caso de error
+            return null;
         }
     };
 
     const AgregarDocumentoId = async (coleccion, datos, uid) => {
         try {
-           
             const coleccionRef = collection(db, coleccion);
-    
-            
             await setDoc(doc(coleccionRef, uid), datos);
-    
             console.log("Documento agregado con ID:", uid);
-            return uid; 
+            return uid;
         } catch (error) {
             console.error("Error al agregar el documento:", error);
-            return null; 
+            return null;
         }
     };
-
     const AgregarMascota = async (uid, mascota) => {
         try {
-           
+            
+            const nuevaMascotaRef = doc(collection(db, "mascotas"));
+            const mascotaId = nuevaMascotaRef.id; 
+    
+        
+            await setDoc(nuevaMascotaRef, {
+                ...mascota,  
+                uid: uid,   
+                mascotaId: mascotaId
+            });
+            
             const usuarioDocRef = doc(db, "users", uid);
-            ObtenerUsuarioFirestore(uid);
-            setSeccionSeleccionada('seleccionarMascota')
+    
+    
             await updateDoc(usuarioDocRef, {
-                mascotas: arrayUnion(mascota)
+                mascotas: arrayUnion(mascotaId) 
             });
     
-            console.log("Mascota agregada correctamente al usuario:", uid);
+            setActualizador((prev) => prev + 1);
+            ObtenerUsuarioFirestore(uid);
+            setSeccionSeleccionada('seleccionarMascota');
+            console.log("Mascota agregada correctamente con ID:", mascotaId);
         } catch (error) {
             console.error("Error al agregar la mascota:", error);
         }
     };
-    const AgregarPost = async ( post) => {
+    
+
+    const AgregarPost = async (post) => {
         try {
-            const postCollectionRef = collection(db, "Post");
+            const postCollectionRef = collection(db, "post");
             const docRef = await addDoc(postCollectionRef, post);
-    
             console.log("Post agregado con ID:", docRef.id);
-    
             setSeccionSeleccionada('inicial');
-    
+            setActualizador((prev) => prev + 1);
+
         } catch (error) {
             console.error("Error al agregar el post:", error);
         }
@@ -267,32 +261,63 @@ export const ContextoFirebaseProvider = ({ children }) => {
 
     const subirImagenAImgbb = async (archivo) => {
         const url = `https://api.imgbb.com/1/upload?key=${kkk}`;
-    
         try {
-            
             const imagenOptimizada = await optimizarImagen(archivo);
-            
             const formData = new FormData();
-            formData.append('image', imagenOptimizada); 
-        
+            formData.append('image', imagenOptimizada);
             const response = await axios.post(url, formData);
             if (response.data.success) {
-                
-                return response.data.data.url; 
+                return response.data.data.url;
             } else {
                 throw new Error('Error al subir la imagen a ImgBB');
             }
         } catch (error) {
             console.error("Error al subir la imagen:", error);
-            return null; 
+            return null;
         }
     };
     
+    const ObtenerDocumentoFirestore = async (nombreColeccion, idDocumento) => {
+        try {
+     
+            const docRef = doc(db, nombreColeccion, idDocumento);
+       
+            const docSnap = await getDoc(docRef);
+            
+            // Verificar si el documento existe
+            if (docSnap.exists()) {
+                console.log("Datos del documento:", docSnap.data());
+                return docSnap.data(); // Retorna los datos del documento
+            } else {
+                console.log("No se encontró el documento en la colección:", nombreColeccion);
+                return null; // Retorna null si el documento no existe
+            }
+        } catch (error) {
+           
+            return null; // Retorna null en caso de error
+        }
+    };
 
-  return (
-    <ContextoFirebase.Provider value={{usuario,usuarioFirebase, setUsuarioFirebase , cerrarSesion, AgregarDocumento, AgregarDocumentoId, 
-    AgregarMascota, AgregarPost,subirImagenAImgbb, obtenerPostGeneral, obtenerMascotasSearch  }}>
-      {children}
-    </ContextoFirebase.Provider>
-  );
+    return (
+        <ContextoFirebase.Provider value={{
+            usuario,
+            usuarioFirebase,
+            setUsuarioFirebase,
+            cerrarSesion,
+            AgregarDocumento,
+            AgregarDocumentoId,
+            AgregarMascota,
+            AgregarPost,
+            obtenerPost,
+            obtenerPostGeneral,
+            subirImagenAImgbb,
+            obtenerMascotasSearch,
+            obtenerMisMascotas,
+            ObtenerDocumentoFirestore
+        }}>
+            {children}
+        </ContextoFirebase.Provider>
+    );
 };
+
+export const useFirebase = () => useContext(ContextoFirebase);
