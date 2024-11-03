@@ -12,10 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import { FormularioPost } from '../../ComponentesGenerales/Secciones/Menu/FormularioPost';
 import { BuscadorSeccion } from '../../ComponentesGenerales/Secciones/SeccionBuscador';
 import { PerfilOtrasMascotas } from '../../ComponentesGenerales/Secciones/Perfil';
-
+import { SeguidoresYSeguidos } from '../../ComponentesGenerales/Secciones/Menu/SeguidoresYSeguidos';
 export const AppPrincipal = () => {
   const [seccion, setSeccion] = useState(null);
-  const { seccionSeleccionada, setMisMascotas,setMascotaUsuarioSeleccionada } = useContext(ContextoGeneral);
+  const { seccionSeleccionada, setMisMascotas,setMascotaUsuarioSeleccionada, mascotaUsuarioSeleccionada } = useContext(ContextoGeneral);
   const {usuarioFirebase,cerrarSesion, obtenerMisMascotas} = useContext(ContextoFirebase); 
   const navigate = useNavigate();
   
@@ -67,6 +67,12 @@ useEffect(() => {
           case 'perfilOtrasMascotas':
               setSeccion(<PerfilOtrasMascotas />);
               break;
+            case 'seguidores':
+                setSeccion(<SeguidoresYSeguidos data={mascotaUsuarioSeleccionada.seguidores} txt={'Seguidores'} />);
+            break;
+            case 'seguidos':
+                setSeccion(<SeguidoresYSeguidos data={mascotaUsuarioSeleccionada.seguidos} txt={'Seguidos'} />);
+            break;
           case 'cerrarSesion':
               cerrarSesion();
               break;

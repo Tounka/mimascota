@@ -11,7 +11,7 @@ import { BtnGenerico, BtnSeguir } from "../Generales/Btns"
 import { ContextoObjSeleccioado } from "../Contexto/ContextoObjSeleccionados"
 
 const ContenedorImg = styled.div`
-    width: 100;
+    width: 100%;
     height: auto;
     max-height: 300px;
     max-width: 500px;
@@ -27,27 +27,70 @@ const ContenedorHorizontal = styled.div`
     display: flex;
     align-items: center;
     gap: ${props => props.gap ?  props.gap : '5px'};
+    @media (max-width: 550px) {
+        text-align: center;
+        justify-content: center;
+        width: 100%;
+    }
+    
+`
+const ContenedorHorizontalPrincipal = styled(ContenedorHorizontal)`
+   
+    gap:10px;
+    @media (max-width: 550px) {
+            flex-direction:column;
+            gap: 0;
+            width: 100%;
+        }
+
+    
+`
+const ContenedorHorizontalSecundario = styled(ContenedorHorizontal)`
+   
+    gap:10px;
+    @media (max-width: 550px) {
+       
+            width: auto;
+        }
+
+    
 `
 const ContenedorPerfil = styled.div`
     display: grid;
-    width: 80%;
+   
     grid-template-columns: 2fr 3fr;
     gap: 10px;
+    @media (max-width: 550px) {
+        width: 90%;
+
+    }
 `
 const ContenedorSeccion = styled.div`
     width: 100%;
     height: 100%;
     display: flex;
-    
+    gap: 5px;
     align-items: ${props => props.left ? 'start' : ''};
     flex-direction: column;
-    
+    @media (max-width: 550px) {
+        gap: 0;
+        justify-content: center;
+        align-items: center;
+
+    }
     
 `
 const Txt = styled.p`
     font-weight: ${props => props.bold ? 'bold' : ''};
+    font-size: ${props => props.size ? props.size : '16px'};
     margin: 0;
+    
     user-select: none;
+    @media (max-width: 550px) {
+        text-align: center;
+        width: 100%;
+    }
+    
 `
 
 
@@ -86,16 +129,15 @@ export const Perfil = () =>{
                 
                 <ContenedorSeccion left>
                     <ContenedorHorizontal gap = '20px'>
-                        <TxtGenerico size = '28px' bold > {nombre} </TxtGenerico>
-                       
+                        <Txt size = '28px' bold > {nombre} </Txt>
                     </ContenedorHorizontal>
-                    <TxtGenerico size = '16px' bold > {raza} </TxtGenerico>
+                    <Txt size = '16px' bold > {raza} </Txt>
                     
-                    <ContenedorHorizontal>
-                        <ContenedorHorizontal> <Txt bold>{publicaciones}</Txt> Publicaciones </ContenedorHorizontal>
-                        <ContenedorHorizontal> <Txt bold>{seguidores}</Txt> Seguidos </ContenedorHorizontal>
-                        <ContenedorHorizontal> <Txt bold>{seguidos}</Txt> Seguidores </ContenedorHorizontal>
-                    </ContenedorHorizontal>
+                    <ContenedorHorizontalPrincipal>
+                        <ContenedorHorizontalSecundario> <Txt bold>{publicaciones}</Txt> Publicaciones </ContenedorHorizontalSecundario>
+                        <ContenedorHorizontalSecundario> <Txt bold>{seguidores}</Txt> Seguidores </ContenedorHorizontalSecundario>
+                        <ContenedorHorizontalSecundario> <Txt bold>{seguidos}</Txt> Seguidos </ContenedorHorizontalSecundario>
+                    </ContenedorHorizontalPrincipal>
 
                     <ContenedorHorizontal>
                         <TxtGenerico size = '16px' bold > {relacion} </TxtGenerico>
@@ -180,16 +222,15 @@ export const PerfilOtrasMascotas = () =>{
                 
                 <ContenedorSeccion left>
                     <ContenedorHorizontal gap = '20px'>
-                        <TxtGenerico size = '28px' bold > {nombre} </TxtGenerico>
-                        <BtnSeguir boolSeguido={boolSeguido} setBoolSeguido={setBoolSeguido} mascotaParaSeguir={perfilMascotaSeleccionada} />
+                        <Txt size = '28px' bold > {nombre} </Txt>
                     </ContenedorHorizontal>
-                    <TxtGenerico size = '16px' bold > {raza} </TxtGenerico>
+                    <Txt size = '16px' bold > {raza} </Txt>
                     
-                    <ContenedorHorizontal>
-                        <ContenedorHorizontal> <Txt bold>{publicaciones}</Txt> Publicaciones </ContenedorHorizontal>
-                        <ContenedorHorizontal> <Txt bold>{seguidores}</Txt> Seguidos </ContenedorHorizontal>
-                        <ContenedorHorizontal> <Txt bold>{seguidos}</Txt> Seguidores </ContenedorHorizontal>
-                    </ContenedorHorizontal>
+                    <ContenedorHorizontalPrincipal>
+                        <ContenedorHorizontalSecundario> <Txt bold>{publicaciones}</Txt> Publicaciones </ContenedorHorizontalSecundario>
+                        <ContenedorHorizontalSecundario> <Txt bold>{seguidores}</Txt> Seguidores </ContenedorHorizontalSecundario>
+                        <ContenedorHorizontalSecundario> <Txt bold>{seguidos}</Txt> Seguidos </ContenedorHorizontalSecundario>
+                    </ContenedorHorizontalPrincipal>
 
                     <ContenedorHorizontal>
                         <TxtGenerico size = '16px' bold > {relacion} </TxtGenerico>
@@ -198,8 +239,7 @@ export const PerfilOtrasMascotas = () =>{
                 </ContenedorSeccion>
 
             </ContenedorPerfil>
-                <GridImg post = {post} />
-            
+            <GridImg post = {post} />
 
         </ContenedorGenerico>
     )

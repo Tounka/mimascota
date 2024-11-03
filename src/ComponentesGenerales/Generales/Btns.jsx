@@ -39,55 +39,54 @@ export const BtnSeguirStyled = styled.button`
     justify-content: center;
     align-items: center;
     gap: 10px;
-`;
-export const BtnSeguir = ({ boolSeguido,setBoolSeguido, mascotaParaSeguir }) => {
+`;export const BtnSeguir = ({ boolSeguido, setBoolSeguido, mascotaParaSeguir }) => {
     const { perfilMascotaSeleccionada, setPerfilMascotaSeleccionada } = useContext(ContextoObjSeleccioado);
     const { mascotaUsuarioSeleccionada, setMascotaUsuarioSeleccionada } = useContext(ContextoGeneral);
 
-        const manejarSeguir = async () => {
-            if (!perfilMascotaSeleccionada || !mascotaUsuarioSeleccionada) {
-                console.log("El perfil de la mascota o el usuario no están definidos.");
-                return;
+    const manejarSeguir = async () => {
+        if (!perfilMascotaSeleccionada || !mascotaUsuarioSeleccionada) {
+            console.log("El perfil de la mascota o el usuario no están definidos.");
+            return;
+        }
+
+        const mascotaId = perfilMascotaSeleccionada.mascotaId; // ID de la mascota a la que se va a seguir o dejar de seguir
+        const miMascotaId = mascotaUsuarioSeleccionada.mascotaId; // ID de la mascota que sigue o deja de seguir
+
+        try {
+            // Verificar si ya sigo a esta mascota
+            if (mascotaParaSeguir.seguidores && mascotaParaSeguir.seguidores.includes(miMascotaId)) {
+                // Dejar de seguir: eliminar el ID de los arrays de seguidores y seguidos
+                const nuevosSeguidores = mascotaParaSeguir.seguidores.filter(id => id !== miMascotaId);
+                const nuevosSeguidos = mascotaParaSeguir.seguidos.filter(id => id !== mascotaId);
+
+                await updateDoc(doc(db, "mascotas", mascotaId), {
+                    seguidores: nuevosSeguidores // Actualiza la lista de seguidores de la mascota que se está dejando de seguir
+                });
+
+                await updateDoc(doc(db, "mascotas", miMascotaId), {
+                    seguidos: nuevosSeguidos // Actualiza la lista de seguidos de la mascota del usuario
+                });
+
+                setBoolSeguido(false);
+                console.log("Has dejado de seguir a la mascota.");
+            } else {
+                // Seguir: agregar el ID al array de seguidores y seguidos
+                await updateDoc(doc(db, "mascotas", mascotaId), {
+                    seguidores: [...(mascotaParaSeguir.seguidores || []), miMascotaId] // Agrega el ID a la lista de seguidores de la mascota
+                });
+
+                await updateDoc(doc(db, "mascotas", miMascotaId), {
+                    seguidos: [...(mascotaParaSeguir.seguidos || []), mascotaId] // Agrega el ID a la lista de seguidos de la mascota del usuario
+                });
+
+                setBoolSeguido(true);
+                console.log("Se ha seguido a la mascota correctamente.");
             }
-    
-            const mascotaId = perfilMascotaSeleccionada.mascotaId; // ID de la mascota a la que se va a seguir o dejar de seguir
-            const miMascotaId = mascotaUsuarioSeleccionada.mascotaId; // ID de la mascota que sigue o deja de seguir
-    
-            try {
-                // Verificar si ya sigo a esta mascota
-                if (mascotaParaSeguir.seguidores && mascotaParaSeguir.seguidores.includes(miMascotaId)) {
-                    // Dejar de seguir: eliminar el ID de los arrays de seguidores y seguidos
-                    const nuevosSeguidores = mascotaParaSeguir.seguidores.filter(id => id !== miMascotaId);
-                    const nuevosSeguidos = mascotaParaSeguir.seguidos.filter(id => id !== mascotaId);
-    
-                    await updateDoc(doc(db, "mascotas", mascotaId), {
-                        seguidores: nuevosSeguidores
-                    });
-    
-                    await updateDoc(doc(db, "mascotas", miMascotaId), {
-                        seguidos: nuevosSeguidos
-                    });
-    
-                    setBoolSeguido(false);
-                    console.log("Has dejado de seguir a la mascota.");
-                } else {
-                    // Seguir: agregar el ID al array de seguidores y seguidos
-                    await updateDoc(doc(db, "mascotas", mascotaId), {
-                        seguidores: [...(mascotaParaSeguir.seguidores || []), miMascotaId]
-                    });
-    
-                    await updateDoc(doc(db, "mascotas", miMascotaId), {
-                        seguidos: [...(mascotaParaSeguir.seguidos || []), mascotaId]
-                    });
-    
-                    setBoolSeguido(true);
-                    console.log("Se ha seguido a la mascota correctamente.");
-                }
-            } catch (error) {
-                console.error("Error al manejar el seguimiento:", error);
-            }
-        };
-    
+        } catch (error) {
+            console.error("Error al manejar el seguimiento:", error);
+        }
+    };
+
     return (
         <BtnSeguirStyled seguido={boolSeguido} onClick={manejarSeguir}>
             {boolSeguido ? "Dejar de seguir" : "Seguir"}

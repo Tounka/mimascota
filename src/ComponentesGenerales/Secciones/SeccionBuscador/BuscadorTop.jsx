@@ -6,6 +6,7 @@ import { ImgPicture } from "../../Generales/Img";
 import { TxtGenerico } from "../../Generales/Titulos";
 import { ContextoObjSeleccioado } from "../../Contexto/ContextoObjSeleccionados";
 import { ContextoGeneral } from "../../Contexto/ContextoGeneral";
+
 const ContenedorStyled = styled.div`
     width: 100%;
     height: 100%;
@@ -44,7 +45,6 @@ const InputBusqueda = styled.input`
     }
 `;
 
-// Contenedor para los resultados de búsqueda
 const ResultadosContenedor = styled.div`
     position: absolute;
     bottom: -45px;
@@ -70,61 +70,69 @@ const ContenedorResultadoItemStyled = styled.div`
         background-color: #f0f0f0;
     }
 `;
+
 const ContenedorImg = styled.div`
     height: 50px;
     width: 50px;
 
-    & img{
+    & img {
         height: 100%;
         width: 100%;
         object-fit: cover;
     }
-`
+`;
 
-const ResultadoItem = ({resultado}) => {
+const ResultadoItem = ({ resultado }) => {
     const { setSeccionSeleccionada } = useContext(ContextoGeneral);
     const { setPerfilMascotaSeleccionada } = useContext(ContextoObjSeleccioado);
-    const handleClickItem = (item) =>{
+
+    const handleClickItem = (item) => {
         setPerfilMascotaSeleccionada(item);
-        console.log(item, 'item')
         setSeccionSeleccionada('perfilOtrasMascotas');
-    }
-    return(
-        <ContenedorResultadoItemStyled onClick = {() => handleClickItem(resultado)}  >
+    };
+
+    return (
+        <ContenedorResultadoItemStyled onClick={() => handleClickItem(resultado)}>
             <ContenedorImg>
                 <ImgPicture src={resultado.img} alt={`Imagen de perfil de ${resultado.nombre}`} />
             </ContenedorImg>
-            <TxtGenerico> {resultado.nombre} - {resultado.especie} </TxtGenerico>
+            <TxtGenerico>{resultado.nombre} - {resultado.especie}</TxtGenerico>
         </ContenedorResultadoItemStyled>
-    )
-}
-
+    );
+};
 
 export const BuscadorTop = () => {
     const [query, setQuery] = useState("");
     const [resultados, setResultados] = useState([]);
+    const [isSearched, setIsSearched] = useState(false);
     const { obtenerMascotasSearch } = useContext(ContextoFirebase);
-
 
     const handleSearch = async () => {
         if (query.trim() === "") {
             setResultados([]);
+            setIsSearched(false);
             return;
         }
-        
+    
+        const normalizedQuery = query.trim().toLowerCase(); // Convertir a minúsculas
+    
         try {
-            const mascotas = await obtenerMascotasSearch(query);
-            const resultadosPrueba = mascotas;
-            setResultados(resultadosPrueba);
+            const mascotas = await obtenerMascotasSearch(normalizedQuery);
+            
+            // Filtrar los resultados para que coincidan sin distinción de mayúsculas y minúsculas
+            const resultadosFiltrados = mascotas.filter(mascota =>
+                mascota.nombre.toLowerCase().includes(normalizedQuery)
+            );
+    
+            setResultados(resultadosFiltrados);
+            setIsSearched(true);
         } catch (error) {
             console.error("Error al buscar mascotas:", error);
             setResultados([]);
+            setIsSearched(true);
         }
     };
 
-
-
-    // Detecta "Enter" y ejecuta la búsqueda
     const handleKeyDown = (e) => {
         if (e.key === "Enter") {
             handleSearch();
@@ -136,26 +144,26 @@ export const BuscadorTop = () => {
             <IconoBusqueda onClick={handleSearch} aria-label="Buscar">
                 <FaSearch />
             </IconoBusqueda>
-            <InputBusqueda 
-                id="buscador" 
-                type="text" 
-                placeholder="Escribe aquí..." 
+            <InputBusqueda
+                id="buscador"
+                type="text"
+                placeholder="Escribe aquí..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 onKeyDown={handleKeyDown}
             />
-            
-            {resultados.length > 0 ? (
+
+            {isSearched && (
                 <ResultadosContenedor>
-                    {resultados.map((resultado) => (
-                        <ResultadoItem resultado={resultado} key={resultado.id} />
-                    ))}
-                </ResultadosContenedor>
-            ) : query && (
-                <ResultadosContenedor>
-                    <ContenedorResultadoItemStyled>
-                        <TxtGenerico>No se encontraron resultados.</TxtGenerico>
-                    </ContenedorResultadoItemStyled>
+                    {resultados.length > 0 ? (
+                        resultados.map((resultado) => (
+                            <ResultadoItem resultado={resultado} key={resultado.id} />
+                        ))
+                    ) : (
+                        <ContenedorResultadoItemStyled>
+                            <TxtGenerico>No se encontraron resultados.</TxtGenerico>
+                        </ContenedorResultadoItemStyled>
+                    )}
                 </ResultadosContenedor>
             )}
         </ContenedorStyled>

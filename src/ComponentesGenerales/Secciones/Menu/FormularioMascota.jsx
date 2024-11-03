@@ -115,17 +115,7 @@ export const FormularioMascota = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
-    function IdEspecifico() {
-        const letras = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        let resultado = "";
 
-        for (let i = 0; i < 3; i++) {
-            const indiceAleatorio = Math.floor(Math.random() * letras.length);
-            resultado += letras[indiceAleatorio];
-        }
-
-        return resultado;
-    }
 
     const formik = useFormik({
         initialValues: {

@@ -297,6 +297,22 @@ const obtenerMisMascotas = async (idUsuario) => {
             return null; // Retorna null en caso de error
         }
     };
+    const obtenerDocumentoPorArregloIds = async (nombreColeccion,ids) => {
+        const mascotas = [];
+    
+        for (const id of ids) {
+            const docRef = doc(db, nombreColeccion, id);
+            const docSnap = await getDoc(docRef);
+    
+            if (docSnap.exists()) {
+                mascotas.push(docSnap.data());
+            } else {
+                console.log(`No se encontró el documento con ID: ${id}`);
+            }
+        }
+    
+        return mascotas; // Retorna el arreglo de mascotas
+    };
 
     return (
         <ContextoFirebase.Provider value={{
@@ -313,7 +329,8 @@ const obtenerMisMascotas = async (idUsuario) => {
             subirImagenAImgbb,
             obtenerMascotasSearch,
             obtenerMisMascotas,
-            ObtenerDocumentoFirestore
+            ObtenerDocumentoFirestore,
+            obtenerDocumentoPorArregloIds
         }}>
             {children}
         </ContextoFirebase.Provider>
