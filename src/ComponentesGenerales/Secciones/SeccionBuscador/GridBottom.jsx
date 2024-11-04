@@ -29,16 +29,21 @@ const ContenedorFila = styled.div`
 const ContenedorImg = styled.div`
     width: 100%;
     height: auto;
-
-    background-color: red;
+    background-color: var(--ColorVerdePrincipal);
+    cursor: pointer;
+    overflow: hidden; /* Asegúrate de que el contenedor no muestre el desbordamiento */
 
     img {
         width: 100%;
         height: 100%;
-        object-fit: cover; 
+        object-fit: cover;
+        transition: transform 0.3s ease; /* Agrega transición para suavizar el efecto */
+    }
+
+    &:hover img {
+        transform: scale(1.1); /* Aplica el zoom al pasar el ratón */
     }
 `;
-
 
 export const GridBottomPrincipal = () => {
     const { obtenerPostGeneral } = useContext(ContextoFirebase);

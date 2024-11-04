@@ -17,15 +17,21 @@ const ContenedorItems = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
-    background-color: var(--ColorVerdePrincipal);
+    gap: 10px;
+
+    
+    
 `
 const ContenedorPrincipal = styled.div`
     display: flex;
     flex-direction: column;
     width: 80%;
-    background-color: var(--ColorVerdePrincipal);
+    background-color: white;
     
     gap: 10px;
+
+    border-radius: 20px ;
+    padding: 20px;
 
 `
 const ContenedorItemStyled = styled.div`
@@ -38,11 +44,10 @@ const ContenedorItemStyled = styled.div`
     gap: 10px;
     padding: 10px;
     cursor: pointer;
-    transition: opacity .3s;
-   
+    background-color: var(--ColorAzulPrincipal);
+    color: white;
     &:hover{
-        opacity: .9;
-        transition: opacity .3s;
+        
     }
     
 `
@@ -99,7 +104,7 @@ export const SeguidoresYSeguidos = ({ txt = 'Seguidos', data }) => {
     return (
         <ContenedorGenerico>
             <ContenedorPrincipal>
-                <TxtGenerico size='28px' bold> Usuarios {txt} </TxtGenerico>
+                <TxtGenerico color="var(--ColorAzulPrincipal)" size='28px' bold> Usuarios {txt} </TxtGenerico>
                 <ContenedorItems>
                     {mascotas.length > 0 ? (
                         mascotas.map((itemData, index) => (

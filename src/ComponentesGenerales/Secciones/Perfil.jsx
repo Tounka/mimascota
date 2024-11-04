@@ -62,7 +62,7 @@ const ContenedorPerfil = styled.div`
     gap: 10px;
     @media (max-width: 550px) {
         width: 90%;
-
+        grid-template-columns: 3fr 3fr;
     }
 `
 const ContenedorSeccion = styled.div`

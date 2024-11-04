@@ -20,7 +20,7 @@ const ContenedorGridImg = styled.div`
 const ContenedorImg = styled.div`
     width: 100%;
     aspect-ratio: 1 / 1;
-    background-color: lightgray; 
+    background-color: var(--ColorVerdePrincipal); 
     overflow: hidden;
     
     transition: .15s ease-in-out;

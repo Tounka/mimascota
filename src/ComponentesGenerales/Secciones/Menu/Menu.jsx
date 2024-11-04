@@ -2,6 +2,7 @@ import styled from "styled-components"
 import { ContenedorGenerico } from "../../Display.jsx/Contenedores"
 import { useContext } from "react"
 import { ContextoGeneral, ContextoGeneralProvider } from "../../Contexto/ContextoGeneral"
+import { TxtGenerico } from "../../Generales/Titulos"
 
 const MenuPrincipalStyled = styled.div`
     width: 100%;
@@ -9,9 +10,9 @@ const MenuPrincipalStyled = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 10px;
+    padding: 20px;
 
-    background-color: var(--ColorVerdePrincipal);
+    background-color: #ffffff5a;
 
 `
 const SeccionMenuStyled = styled.div`
@@ -28,14 +29,18 @@ const ItemMenu = styled.div`
     padding: 10px;
     cursor: pointer;
     user-select: none;
+    transition: .2s ease;
     &:hover{
-        background-color: white;
+        background-color: var(--ColorAzulPrincipal);
+        color: white;
+        transition: .2s ease;
     }
 `
 const TituloSeccion = styled.div`
     font-size: 18px;
     color: black;
     font-weight: bold;
+    color: var(--ColorAzulPrincipal);
 `
 export const SeccionMenu = ({secciones = [1,1,1,1]}) =>{
     const {setSeccionSeleccionada} = useContext(ContextoGeneral);
@@ -65,9 +70,10 @@ export const Menu = ({pet}) =>{
         
             
             <MenuPrincipalStyled>
+                <TxtGenerico bold size='28px' color={'var(--ColorAzulPrincipal)'} >Menu</TxtGenerico>
                 <SeccionMenu secciones =  {seccionPerfil} />
                 <SeccionMenu secciones =  {seccionSocial} />
-                <SeccionMenu secciones =  {seccionPerfil} />
+                
             </MenuPrincipalStyled>
    
         

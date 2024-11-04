@@ -1,9 +1,9 @@
 import styled from "styled-components"
-import { MdPets,MdMenu } from "react-icons/md";
+import { MdPets } from "react-icons/md";
 import { useContext, useState } from "react";
 import { ContextoGeneral } from "../Contexto/ContextoGeneral";
-import { FaPlus } from "react-icons/fa";
-import { IoGrid } from "react-icons/io5";
+import { FaPlus,FaSearch } from "react-icons/fa";
+import { TiThMenu } from "react-icons/ti";
 const DisplayPrincipalStyled = styled.div`
     display: grid;
     grid-template-rows:  auto 80px;
@@ -53,8 +53,8 @@ const ContenedoresIconos = styled.div`
     overflow: hidden;
     cursor: pointer;
     svg {
-        height: 80%;
-        width: 80%;
+        height: 70%;
+        width: 70%;
     }
 
 `
@@ -74,13 +74,13 @@ const Menu = () => {
     return ( 
         <MenuStyled>
             <ContenedoresIconos onClick={() => handleClick({ seccion: 'buscadorSeccion', fnEsp: false })} >
-                <IoGrid />
+                <FaSearch  size={24} />
             </ContenedoresIconos>
             <ContenedoresIconos onClick={() => handleClick({ seccion: boolSeccionInicio ? 'inicial' : 'formularioPost', fnEsp: true })} > 
                 {boolSeccionInicio ? <MdPets /> : <FaPlus />}  
             </ContenedoresIconos>
             <ContenedoresIconos onClick={() => handleClick({ seccion: 'menu', fnEsp: false })} > 
-                <MdMenu /> 
+                <TiThMenu /> 
             </ContenedoresIconos>
         </MenuStyled>
     );
