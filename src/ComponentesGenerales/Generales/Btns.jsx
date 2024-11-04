@@ -68,7 +68,7 @@ export const BtnSeguirStyled = styled.button`
                 });
 
                 setBoolSeguido(false);
-                console.log("Has dejado de seguir a la mascota.");
+                
             } else {
                 // Seguir: agregar el ID al array de seguidores y seguidos
                 await updateDoc(doc(db, "mascotas", mascotaId), {
@@ -80,7 +80,7 @@ export const BtnSeguirStyled = styled.button`
                 });
 
                 setBoolSeguido(true);
-                console.log("Se ha seguido a la mascota correctamente.");
+                
             }
         } catch (error) {
             console.error("Error al manejar el seguimiento:", error);

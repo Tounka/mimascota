@@ -23,6 +23,7 @@ code {
 :root{
   --ColorVerdePrincipal:   #42E2B8;
   --ColorAzulPrincipal:    #3454D1;
+  --ColorAzulPrincipalHover:    #1838b8;
   --ColorNegroPrincipal:   #070707;
   --ColorRojoPrincipal:    #AF3B6E;
   --ColorNaranjaPrincipal: #F0A202;

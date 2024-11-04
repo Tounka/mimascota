@@ -176,7 +176,7 @@ export const PerfilOtrasMascotas = () =>{
         };
         if(perfilMascotaSeleccionada){
             fetchPerfil();
-            console.log('asdasda')
+           
         }
     }, [boolSeguido]);
     

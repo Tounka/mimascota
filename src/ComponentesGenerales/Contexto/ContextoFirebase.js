@@ -81,7 +81,6 @@ export const ContextoFirebaseProvider = ({ children }) => {
                 const userData = querySnapshot.docs[0].data();
                 setUsuarioFirebase(userData);
                 navigate('/');
-                console.log("Usuario Firestore:", userData);
                 setMascotaUsuarioSeleccionada(userData?.mascotas[0]);
             } else {
                 setValidadorUsuarioFirebase(true);
@@ -104,7 +103,7 @@ export const ContextoFirebaseProvider = ({ children }) => {
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
                 const postsData = querySnapshot.docs.map((doc) => doc.data());
-                console.log("Posts encontrados:", postsData);
+               
                 return postsData;
             } else {
                 console.log("No se encontraron posts para la mascota:", mascotaId);
@@ -123,7 +122,7 @@ export const ContextoFirebaseProvider = ({ children }) => {
             const querySnapshot = await getDocs(q);
             if (!querySnapshot.empty) {
                 const postsData = querySnapshot.docs.map((doc) => doc.data());
-                console.log("Posts encontrados:", postsData);
+        
                 return postsData;
             } else {
                 console.log("No se encontraron posts para la mascota:");
@@ -184,7 +183,7 @@ const obtenerMisMascotas = async (idUsuario) => {
             mascotasArreglo.push(data);
         });
         
-        console.log(mascotasArreglo, 'return');
+       
         return mascotasArreglo;
     } catch (error) {
         console.error("Error obteniendo mascotas de Firestore:", error);
@@ -197,7 +196,7 @@ const obtenerMisMascotas = async (idUsuario) => {
         try {
             const coleccionRef = collection(db, coleccion);
             const docRef = await addDoc(coleccionRef, datos);
-            console.log("Documento agregado con ID:", docRef.id);
+         
             return docRef.id;
         } catch (error) {
             console.error("Error al agregar el documento:", error);
@@ -209,7 +208,7 @@ const obtenerMisMascotas = async (idUsuario) => {
         try {
             const coleccionRef = collection(db, coleccion);
             await setDoc(doc(coleccionRef, uid), datos);
-            console.log("Documento agregado con ID:", uid);
+           
             return uid;
         } catch (error) {
             console.error("Error al agregar el documento:", error);
@@ -239,7 +238,7 @@ const obtenerMisMascotas = async (idUsuario) => {
             setActualizador((prev) => prev + 1);
             ObtenerUsuarioFirestore(uid);
             setSeccionSeleccionada('seleccionarMascota');
-            console.log("Mascota agregada correctamente con ID:", mascotaId);
+       
         } catch (error) {
             console.error("Error al agregar la mascota:", error);
         }
@@ -250,7 +249,7 @@ const obtenerMisMascotas = async (idUsuario) => {
         try {
             const postCollectionRef = collection(db, "post");
             const docRef = await addDoc(postCollectionRef, post);
-            console.log("Post agregado con ID:", docRef.id);
+         
             setSeccionSeleccionada('inicial');
             setActualizador((prev) => prev + 1);
 
@@ -286,7 +285,7 @@ const obtenerMisMascotas = async (idUsuario) => {
             
             // Verificar si el documento existe
             if (docSnap.exists()) {
-                console.log("Datos del documento:", docSnap.data());
+               
                 return docSnap.data(); // Retorna los datos del documento
             } else {
                 console.log("No se encontró el documento en la colección:", nombreColeccion);

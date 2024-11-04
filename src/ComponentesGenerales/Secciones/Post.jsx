@@ -38,8 +38,6 @@ const ContenedorTxt = styled.div`
   
 export const Post = () =>{
     const {postSeleccionado} = useContext(ContextoGeneral);
-   
-    console.log(postSeleccionado);
 
     let titulo = postSeleccionado?.titulo || 'Titulo';
     let img = postSeleccionado?.img || 'https://www.zooplus.es/magazine/wp-content/uploads/2022/01/Psicologia-felina.jpeg';
