@@ -211,7 +211,7 @@ export const FormularioPost = () => {
                     {formik.touched.img && formik.errors.img ? <div>{formik.errors.img}</div> : null}
 
                     <Button type="submit" disabled={isSubmitting}>
-                        {isSubmitting ? "Enviando..." : "Unir a la familia"}
+                        {isSubmitting ? "Enviando..." : "Subir post"}
                     </Button>
                 </FormStyled>
             </ContenedorPostStyled>
