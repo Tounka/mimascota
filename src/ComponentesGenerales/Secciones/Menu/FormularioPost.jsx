@@ -96,20 +96,18 @@ const ImagePreview = styled.img`
     height: 100%;
     object-fit: cover;
 `;
-
 export const FormularioPost = () => {
-    const { postSeleccionado,setSeccionSeleccionada, mascotaUsuarioSeleccionada,  } = useContext(ContextoGeneral);
-    const { usuario,AgregarPost,subirImagenAImgbb   } = useContext(ContextoFirebase);
+    const { postSeleccionado, setSeccionSeleccionada, mascotaUsuarioSeleccionada } = useContext(ContextoGeneral);
+    const { usuario, AgregarPost, subirImagenAImgbb } = useContext(ContextoFirebase);
     const [file, setFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
 
-
     const formik = useFormik({
         initialValues: {
-            uid: usuario.uid ,
-            mascotaId: mascotaUsuarioSeleccionada?.mascotaId ,
+            uid: usuario.uid,
+            mascotaId: mascotaUsuarioSeleccionada?.mascotaId,
             titulo: '',
             img: '',
             fecha: new Date(),
@@ -117,32 +115,26 @@ export const FormularioPost = () => {
         },
         validationSchema: Yup.object({
             titulo: Yup.string().required('El titulo es obligatorio'),
-            parrafo: Yup.string().required('El parrafo es obligatoria'),
+            parrafo: Yup.string().required('El parrafo es obligatorio'),
             img: Yup.mixed().required('La imagen es obligatoria'),
         }),
         onSubmit: async (values) => {
-            setIsSubmitting(true); 
+            setIsSubmitting(true);
 
             try {
-                
                 const urlImagen = await subirImagenAImgbb(values.img);
-            
-                
+
                 if (urlImagen) {
                     const postData = {
                         uid: values.uid,
-                        mascotaId: values.mascotaId ,
+                        mascotaId: values.mascotaId,
                         titulo: values.titulo,
                         img: urlImagen,
                         fecha: values.fecha,
                         parrafo: values.parrafo,
                     };
-            
-                
-                    await AgregarPost(postData);
 
-                    
-                   
+                    await AgregarPost(postData);
                     setSeccionSeleccionada('inicial');
                 } else {
                     console.error('No se pudo subir la imagen');
@@ -152,7 +144,6 @@ export const FormularioPost = () => {
             } finally {
                 setIsSubmitting(false);
             }
-            
         },
     });
 
@@ -173,7 +164,7 @@ export const FormularioPost = () => {
     return (
         <ContenedorGenerico>
             <ContenedorPostStyled>
-                <TxtGenerico bold size='24px' color ='var(--ColorAzulPrincipal)'>Subir post</TxtGenerico>
+                <TxtGenerico bold size='24px' color='var(--ColorAzulPrincipal)'>Subir post</TxtGenerico>
                 <FormStyled onSubmit={formik.handleSubmit}>
                     <ContenedorTxt>
                         <Label htmlFor='titulo'>Titulo</Label>
@@ -182,9 +173,10 @@ export const FormularioPost = () => {
                             name="titulo"
                             type="text"
                             onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             value={formik.values.titulo}
                         />
-                        {formik.errors.titulo ? <div>{formik.errors.titulo}</div> : null}
+                        {formik.touched.titulo && formik.errors.titulo ? <div>{formik.errors.titulo}</div> : null}
                     </ContenedorTxt>
 
                     <ContenedorTxt>
@@ -194,11 +186,11 @@ export const FormularioPost = () => {
                             name="parrafo"
                             type="text"
                             onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             value={formik.values.parrafo}
                         />
-                        {formik.errors.parrafo ? <div>{formik.errors.parrafo}</div> : null}
+                        {formik.touched.parrafo && formik.errors.parrafo ? <div>{formik.errors.parrafo}</div> : null}
                     </ContenedorTxt>
-
 
                     <InputFile
                         id="img"
@@ -216,7 +208,7 @@ export const FormularioPost = () => {
                         )}
                     </ImagePreviewContainer>
 
-                    {formik.errors.img ? <div>{formik.errors.img}</div> : null}
+                    {formik.touched.img && formik.errors.img ? <div>{formik.errors.img}</div> : null}
 
                     <Button type="submit" disabled={isSubmitting}>
                         {isSubmitting ? "Enviando..." : "Unir a la familia"}

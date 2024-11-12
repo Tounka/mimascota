@@ -35,7 +35,7 @@ export const UsuarioHumano = () =>{
     const nombre = usuarioFirebase?.nombre || 'Error';
     const apellido = usuarioFirebase?.apellido || 'Error';
     const userName = usuarioFirebase?.userName || 'Error';
-    const img = usuarioFirebase?.photoURL || 'https://www.whiskas.com.mx/cdn-cgi/image/format=auto,q=90/sites/g/files/fnmzdf4861/files/2022-11/eduquer-son-Chaton-comment-bien-eduquer-son-Chaton.jpg';
+    const img = usuarioFirebase?.img || 'https://www.whiskas.com.mx/cdn-cgi/image/format=auto,q=90/sites/g/files/fnmzdf4861/files/2022-11/eduquer-son-Chaton-comment-bien-eduquer-son-Chaton.jpg';
     const email = usuario?.email || 'Error';
 
     const handleClickCerrarSesion = () =>{

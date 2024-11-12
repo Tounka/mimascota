@@ -99,7 +99,7 @@ const ImagePreview = styled.img`
 `;
 
 export const FormularioUsuarioHumano = () => {
-    const { AgregarDocumentoId, usuario, setValidadorUsuarioFirebase, setUsuarioFirebase } = useContext(ContextoFirebase);
+    const { AgregarDocumentoId, usuario, setValidadorUsuarioFirebase, setUsuarioFirebase,subirImagenAImgbb } = useContext(ContextoFirebase);
     
 
     const [file, setFile] = useState(null); 
@@ -136,12 +136,13 @@ export const FormularioUsuarioHumano = () => {
         }),
         onSubmit: async (values) => {
             setIsSubmitting(true);
+            const urlImagen = await subirImagenAImgbb(values.img);
             const userData = {
                 nombre: values.nombre,
                 apellido: values.apellido,
                 userName: values.userName,
                 uid: values.uid,
-                img: 'url',
+                img: urlImagen,
                 mascotas: [],
                 seguidores: [],
                 seguidos: [],

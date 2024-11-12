@@ -36,7 +36,7 @@ export const AppPrincipal = () => {
 useEffect(() => {
   if (usuarioFirebase == null || usuarioFirebase == undefined) {
       navigate('/iniciarSesion');
-  } else if (usuarioFirebase?.mascotas?.length === 0) {
+  } else if (usuarioFirebase?.mascotas?.length === 0 || usuarioFirebase?.mascotas?.length === undefined ) {
       setSeccion(<FormularioMascota />);
   } else if (usuarioFirebase?.mascotas != null) {
       switch (seccionSeleccionada) {

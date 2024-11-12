@@ -230,17 +230,7 @@ export const FormularioMascota = () => {
                         )}
                     </ContenedorTxt>
 
-                    <ContenedorTxt>
-                        <Label htmlFor="relacion">Cual es tu relación</Label>
-                        <ContenedorInputs role="group" aria-labelledby="relacion">
-                            <ContenedorGenero>
-                                {/* Radio inputs for "Amigo", "Hijo", etc. */}
-                            </ContenedorGenero>
-                        </ContenedorInputs>
-                        {formik.submitCount > 0 && formik.errors.relacion && (
-                            <div>{formik.errors.relacion}</div>
-                        )}
-                    </ContenedorTxt>
+      
 
                     <InputFile
                         id="img"

@@ -7,7 +7,7 @@ import { catData } from "../Contexto/DataUsuarioTemporal"
 import { useContext, useEffect, useState } from "react"
 import { ContextoGeneral } from "../Contexto/ContextoGeneral"
 import { ContextoFirebase } from "../Contexto/ContextoFirebase"
-import { BtnGenerico, BtnSeguir } from "../Generales/Btns"
+import { BtnGenerico, BtnSeguir, BtnSeguirStyled } from "../Generales/Btns"
 import { ContextoObjSeleccioado } from "../Contexto/ContextoObjSeleccionados"
 
 const ContenedorImg = styled.div`
@@ -221,21 +221,25 @@ export const PerfilOtrasMascotas = () =>{
                 </ContenedorSeccion>
                 
                 <ContenedorSeccion left>
-                    <ContenedorHorizontal gap = '20px'>
+                    <ContenedorHorizontal gap = '10px'>
                         <Txt size = '28px' bold > {nombre} </Txt>
+                        
                     </ContenedorHorizontal>
+                    
                     <Txt size = '16px' bold > {raza} </Txt>
                     
+
                     <ContenedorHorizontalPrincipal>
                         <ContenedorHorizontalSecundario> <Txt bold>{publicaciones}</Txt> Publicaciones </ContenedorHorizontalSecundario>
                         <ContenedorHorizontalSecundario> <Txt bold>{seguidores}</Txt> Seguidores </ContenedorHorizontalSecundario>
                         <ContenedorHorizontalSecundario> <Txt bold>{seguidos}</Txt> Seguidos </ContenedorHorizontalSecundario>
                     </ContenedorHorizontalPrincipal>
-
+                    
                     <ContenedorHorizontal>
                         <TxtGenerico size = '16px' bold > {relacion} </TxtGenerico>
                         <TxtGenerico size = '16px'  > {user} </TxtGenerico>
                     </ContenedorHorizontal>
+                    <BtnSeguir boolSeguido={boolSeguido} setBoolSeguido={setBoolSeguido}  mascotaParaSeguir={perfilMascotaSeleccionada} />
                 </ContenedorSeccion>
 
             </ContenedorPerfil>

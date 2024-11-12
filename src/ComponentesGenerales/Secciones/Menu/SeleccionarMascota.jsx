@@ -14,7 +14,7 @@ const ContenedorImg = styled.div`
     height: 150px;
     overflow: hidden;
     border-radius: ${(props) => props.borderRadius} ;
-    background-color: red;
+    background-color: var(--ColorVerdePrincipal);
     img {
         width: 100%;
         height: 100%;

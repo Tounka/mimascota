@@ -135,29 +135,25 @@ export const ContextoFirebaseProvider = ({ children }) => {
     };
 
     const obtenerMascotasSearch = async (q) => {
+        console.log(q)
         try {
             const mascotasRef = collection(db, "mascotas");
     
             // Consultas separadas
             const consultaNombre = query(mascotasRef, where("nombre", "==", q));
-            const consultaEspecie = query(mascotasRef, where("especie", "==", q));
+          
     
-            const [snapshotNombre, snapshotEspecie] = await Promise.all([
+            const [snapshotNombre] = await Promise.all([
                 getDocs(consultaNombre),
-                getDocs(consultaEspecie),
+          
             ]);
     
             const mascotasArreglo = [];
     
             snapshotNombre.forEach((doc) => mascotasArreglo.push({ id: doc.id, ...doc.data() }));
-            snapshotEspecie.forEach((doc) => {
-                const mascota = { id: doc.id, ...doc.data() };
-                if (!mascotasArreglo.some((m) => m.id === mascota.id)) {
-                    mascotasArreglo.push(mascota);
-                }
-            });
+            
     
-            console.log("Mascotas con nombre o especie igual a:", q, mascotasArreglo);
+ 
             return mascotasArreglo;
         } catch (error) {
             console.error("Error obteniendo mascotas de Firestore:", error);
@@ -222,23 +218,25 @@ const obtenerMisMascotas = async (idUsuario) => {
             const mascotaId = nuevaMascotaRef.id; 
     
         
-            await setDoc(nuevaMascotaRef, {
-                ...mascota,  
-                uid: uid,   
+            const mascotaConNombreLowercase = {
+                ...mascota,
+                nombre: mascota.nombre.toLowerCase(),
+                especie: mascota.especie.toLowerCase(),
+                uid: uid,
                 mascotaId: mascotaId
-            });
+            };
             
+            await setDoc(nuevaMascotaRef, mascotaConNombreLowercase);
+
             const usuarioDocRef = doc(db, "users", uid);
-    
-    
+
             await updateDoc(usuarioDocRef, {
-                mascotas: arrayUnion(mascotaId) 
+                mascotas: arrayUnion(mascotaId)
             });
-    
+
             setActualizador((prev) => prev + 1);
             ObtenerUsuarioFirestore(uid);
             setSeccionSeleccionada('seleccionarMascota');
-       
         } catch (error) {
             console.error("Error al agregar la mascota:", error);
         }
